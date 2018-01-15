@@ -4,6 +4,7 @@ project (Frameworks.Helmet)
 
 set (MODULES
     Core
+    Application
 )
 
 foreach (SUBDIR ${MODULES})
