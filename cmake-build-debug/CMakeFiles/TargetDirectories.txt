@@ -1,9 +1,0 @@
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/CMakeFiles/rebuild_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/CMakeFiles/edit_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/Helmet/CMakeFiles/rebuild_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/Helmet/CMakeFiles/edit_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/Helmet/Core/CMakeFiles/rebuild_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/Helmet/Core/CMakeFiles/edit_cache.dir
-/Users/mgray/Projects/HatBoySoftware/Frameworks/Helmet/cmake-build-debug/Frameworks/Helmet/Core/CMakeFiles/Helmet.Core.dir
