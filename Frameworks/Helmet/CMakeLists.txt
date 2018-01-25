@@ -5,6 +5,7 @@ project (Frameworks.Helmet)
 set (MODULES
     Core
     Application
+    Workbench
 )
 
 foreach (SUBDIR ${MODULES})

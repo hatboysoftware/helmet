@@ -45,7 +45,7 @@ PluginManager::getPlugin(const std::string& plugin)
         BOOST_THROW_EXCEPTION(std::runtime_error(stream.str()));
     }
 
-    auto modulePath = pluginPath / "bin";
+    auto modulePath = pluginPath;// / "bin";
 
     I_ModuleManager::getSingleton().addPath(modulePath);
 

@@ -3,7 +3,7 @@ project(Helmet)
 
 set (CMAKE_CXX_STANDARD 11)
 
-find_package(Boost COMPONENTS system filesystem log log_setup thread REQUIRED)
+find_package(Boost COMPONENTS system locale filesystem thread log unit_test_framework REQUIRED)
 
 if(Boost_FOUND)
 
@@ -28,6 +28,7 @@ list (REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 set (COMPONENTS
     Frameworks
+    Applications
 )
 
 foreach (SUBDIR ${COMPONENTS})

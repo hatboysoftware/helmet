@@ -7,13 +7,10 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Core/Plugin/I_ModuleService.hpp>
+#include "../Configuration.hpp"
 
-#include <boost/thread/mutex.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/filesystem/path.hpp>
-
-#include <map>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -21,42 +18,37 @@ namespace Core {
 namespace Plugin {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_ModuleInfo;
+class I_Module;
 
-class ModuleService
-:   public I_ModuleService
+class HELMET_CORE_DLL_LINK I_ModuleService
+:   public boost::noncopyable
 {
     /// @name Types
     /// @{
 public:
-    typedef std::map<std::string, pModule_type>         ModuleNameIdx_type;
-    typedef boost::shared_ptr<I_ModuleInfo>             pModuleInfo_type;
-    typedef std::map<pModule_type, pModuleInfo_type>    Modules_type;
+    /// This is a raw pointer because the lifetime
+    /// is handled by load / unload pairs.
+    typedef I_Module*                   pModule_type;
     /// @}
 
-    /// @name I_ModuleService implementation
+    /// @name I_ModuleService interface
     /// @{
 public:
-    pModule_type load(const std::string& _moduleName) override;
-    void unload(pModule_type _pModule) override;
+    /// Load a module.
+    virtual pModule_type load(const std::string& _moduleName) = 0;
+
+    /// Unload a module.
+    virtual void unload(pModule_type _module) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
-public:
-     ModuleService();
-    ~ModuleService() override;
+protected:
+             I_ModuleService();
+    virtual ~I_ModuleService();
     /// @}
 
-    /// @name Member variables
-    /// @{
-private:
-    ModuleNameIdx_type      m_moduleIdx;
-    Modules_type            m_modules;
-    boost::mutex            m_moduleMutex;
-    /// @}
-
-};  // interface ModuleService
+};  // interface I_ModuleService
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Plugin

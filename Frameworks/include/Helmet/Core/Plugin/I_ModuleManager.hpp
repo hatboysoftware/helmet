@@ -7,13 +7,11 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Core/Plugin/I_ModuleService.hpp>
+#include "../Configuration.hpp"
 
-#include <boost/thread/mutex.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
-
-#include <map>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -21,42 +19,47 @@ namespace Core {
 namespace Plugin {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_ModuleInfo;
+class I_ModuleService;
 
-class ModuleService
-:   public I_ModuleService
+class HELMET_CORE_DLL_LINK I_ModuleManager
+:   public boost::noncopyable
 {
     /// @name Types
     /// @{
 public:
-    typedef std::map<std::string, pModule_type>         ModuleNameIdx_type;
-    typedef boost::shared_ptr<I_ModuleInfo>             pModuleInfo_type;
-    typedef std::map<pModule_type, pModuleInfo_type>    Modules_type;
+    typedef boost::shared_ptr<I_ModuleService>  pService_type;
     /// @}
 
-    /// @name I_ModuleService implementation
+    /// @name I_ModuleManager interface
     /// @{
 public:
-    pModule_type load(const std::string& _moduleName) override;
-    void unload(pModule_type _pModule) override;
+    /// Load a module service
+    virtual pService_type getService() = 0;
+
+    /// Add a module search path
+    virtual void addPath(const boost::filesystem::path& _modulePath) = 0;
+
+    /// Drop a module search path
+    virtual void dropPath(const boost::filesystem::path& _modulePath) = 0;
+
+    /// Find module path if one exists
+    virtual bool findPath(const std::string _moduleName, boost::filesystem::path &_modulePath) = 0;
+    /// @}
+
+    /// @name Static Instance
+    /// @{
+public:
+    static I_ModuleManager& getSingleton();
     /// @}
 
     /// @name 'Structors
     /// @{
-public:
-     ModuleService();
-    ~ModuleService() override;
+protected:
+             I_ModuleManager();
+    virtual ~I_ModuleManager();
     /// @}
 
-    /// @name Member variables
-    /// @{
-private:
-    ModuleNameIdx_type      m_moduleIdx;
-    Modules_type            m_modules;
-    boost::mutex            m_moduleMutex;
-    /// @}
-
-};  // interface ModuleService
+};  // interface I_ModuleManager
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Plugin
