@@ -9,6 +9,9 @@
 #include "TopFrame.hpp"
 #include "Menu.hpp"
 #include "MenuItem.hpp"
+#include "LogView.hpp"
+#include "LogModel.hpp"
+#include "Notebook.hpp"
 
 #include <Helmet/Core/Plugin/I_Environment.hpp>
 #include <Helmet/Workbench/I_MenuBar.hpp>
@@ -61,6 +64,16 @@ void Workbench::initialize()
     menuBar.addMenu(*fileMenu);
 
     auto& statusBar = m_pTopFrame->getStatusBar();
+
+    auto& bottomNotebook = m_pTopFrame->getBottomNotebook();
+    auto logView = new LogView(bottomNotebook, "Console Log");
+    auto logModel = new LogModel(std::cout, m_pEnvironment);
+    logModel->subscribe(*logView);
+    bottomNotebook.addPage(*logView);
+
+    auto& leftNotebook = m_pTopFrame->getLeftNotebook();
+
+    auto& centerNotebook = m_pTopFrame->getCenterNotebook();
 
     m_pTopFrame->show(true);
 }

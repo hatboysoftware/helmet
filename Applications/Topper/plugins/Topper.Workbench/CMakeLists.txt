@@ -12,22 +12,38 @@ include(Utilities)
 
 set (Topper.Workbench_SRC
     src/Configuration.hpp
+    src/Connection.cpp
+    src/Connection.hpp
     src/Event.cpp
     src/Event.hpp
+    src/Frame.cpp
+    src/Frame.hpp
+    src/LogModel.cpp
+    src/LogModel.hpp
+    src/LogView.cpp
+    src/LogView.hpp
     src/Menu.cpp
     src/Menu.hpp
     src/MenuBar.cpp
     src/MenuBar.hpp
     src/MenuItem.cpp
     src/MenuItem.hpp
+    src/Model.cpp
+    src/Model.hpp
     src/Module.cpp
     src/Module.hpp
+    src/Notebook.cpp
+    src/Notebook.hpp
+    src/NotebookPage.cpp
+    src/NotebookPage.hpp
     src/Plugin.cpp
     src/Plugin.hpp
     src/StatusBar.cpp
     src/StatusBar.hpp
     src/TopFrame.cpp
     src/TopFrame.hpp
+    src/View.cpp
+    src/View.hpp
     src/Workbench.cpp
     src/Workbench.hpp
 )

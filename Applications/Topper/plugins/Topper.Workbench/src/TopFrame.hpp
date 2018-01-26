@@ -28,10 +28,12 @@ namespace Helmet {
         class I_Workbench;
         class I_MenuBar;
         class I_StatusBar;
+        class I_Notebook;
     }   // namespace Workbench
 }   // namespace Helmet
 namespace Topper {
 class Workbench;
+class Notebook;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
 class TopFrame
@@ -50,17 +52,11 @@ public:
     /// @{
 public:
     void setName(const std::string& _name) override;
-
     const std::string getName() const override;
-
     void addChildFrame(I_Frame& _frame) override;
-
     void removeChildFrame(I_Frame& _frame) override;
-
     void getChildFrames(I_FrameVisitor& _visitor) override;
-
     void show(bool _visible) override;
-
     void handleEvent(pEvent_type _pEvent) override;
     /// @}
 
@@ -69,6 +65,9 @@ public:
 public:
     Helmet::Workbench::I_MenuBar& getMenuBar();
     Helmet::Workbench::I_StatusBar& getStatusBar();
+    Notebook& getBottomNotebook();
+    Notebook& getLeftNotebook();
+    Notebook& getCenterNotebook();
     /// @}
 
     /// @name Event Handlers

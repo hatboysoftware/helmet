@@ -9,6 +9,7 @@
 #include "Workbench.hpp"
 #include "MenuBar.hpp"
 #include "StatusBar.hpp"
+#include "Notebook.hpp"
 
 #include <Helmet/Core/Plugin/I_Environment.hpp>
 #include <Helmet/Workbench/I_Event.hpp>
@@ -136,5 +137,121 @@ TopFrame::getStatusBar()
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Notebook&
+TopFrame::getBottomNotebook()
+{
+    auto pNotebook = new Notebook(*this, "bottom");
+    wxAuiPaneInfo paneInfo;
+    paneInfo.Name(wxString::FromUTF8("bottom"));
+    paneInfo.Caption(wxString::FromUTF8("Bottom Dock"));
+    paneInfo.CloseButton(true);
+    paneInfo.MinimizeButton(true);
+    paneInfo.MaximizeButton(true);
+    paneInfo.PinButton(true);
+    paneInfo.Bottom();
+
+    m_mgr.AddPane(pNotebook, paneInfo);
+
+    m_mgr.Update();
+
+    return *pNotebook;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Notebook&
+TopFrame::getLeftNotebook()
+{
+    auto pNotebook = new Notebook(*this, "left");
+    wxAuiPaneInfo paneInfo;
+    paneInfo.Name(wxString::FromUTF8("left"));
+    paneInfo.Caption(wxString::FromUTF8("Left Dock"));
+    paneInfo.CloseButton(true);
+    paneInfo.MinimizeButton(true);
+    paneInfo.MaximizeButton(true);
+    paneInfo.PinButton(true);
+    paneInfo.Left();
+
+    m_mgr.AddPane(pNotebook, paneInfo);
+
+    m_mgr.Update();
+
+    return *pNotebook;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Notebook&
+TopFrame::getCenterNotebook()
+{
+    auto pNotebook = new Notebook(*this, "center");
+    wxAuiPaneInfo paneInfo;
+    paneInfo.Name(wxString::FromUTF8("center"));
+    paneInfo.Caption(wxString::FromUTF8("Center Dock"));
+    paneInfo.CloseButton(true);
+    paneInfo.MinimizeButton(true);
+    paneInfo.MaximizeButton(true);
+    paneInfo.PinButton(true);
+    paneInfo.Center();
+
+    m_mgr.AddPane(pNotebook, paneInfo);
+
+    m_mgr.Update();
+
+    return *pNotebook;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+/*
+ *     auto pNotebook = new Notebook(*this, _title);
+    wxAuiPaneInfo panelInfo;
+    panelInfo.Name(wxString::FromUTF8(_title.c_str()));
+    panelInfo.Caption(wxString::FromUTF8(_caption.c_str()));
+    panelInfo.CloseButton(_closeButton == "true");
+    panelInfo.MinimizeButton(_minimizeButton == "true");
+    panelInfo.MaximizeButton(_maximizeButton == "true");
+    panelInfo.PinButton(_pinButton == "true");
+    if (_toolbar == "true")
+    {
+        panelInfo = panelInfo.ToolbarPane();
+    }
+
+    if (_dock == "left")
+    {
+        panelInfo.Left();
+    }
+    else if (_dock == "top")
+    {
+        panelInfo.Top();
+    }
+    else if (_dock == "right")
+    {
+        panelInfo.Right();
+    }
+    else if (_dock == "bottom")
+    {
+        panelInfo.Bottom();
+    }
+    else if (_dock == "center")
+    {
+        panelInfo.Center();
+    }
+    else
+    {
+        panelInfo.Center();
+    }
+
+    m_mgr.AddPane(
+        pNotebook->getWindow(),
+        panelInfo);
+
+    m_mgr.Update();
+
+    auto pManagedNotebook = pNotebook_type(pNotebook,
+                                           Hyperion::Core::Utility::Deleter<
+                                                Hyperion::Workbench::I_Notebook,
+                                                Notebook>());
+    m_pFrames.push_back(pManagedNotebook);
+    return pManagedNotebook;
+
+ */

@@ -27,6 +27,7 @@ set (CMAKE_MODULE_PATH ${ROOT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
 list (REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 set (COMPONENTS
+    3rdParty
     Frameworks
     Applications
 )
