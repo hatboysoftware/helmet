@@ -9,11 +9,13 @@ include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/include ${Boost_INCLUDE_D
 include(Utilities)
 
 set (Helmet.Core_SRC
+    src/Event/I_Action.cpp
     src/Event/I_Connection.cpp
     src/Event/I_Event.cpp
     src/Event/I_Observable.cpp
     src/Event/I_Observer.cpp
     src/Exception/Exception.cpp
+    src/Exception/NotImplementedException.cpp
     src/Plugin/Environment.cpp
     src/Plugin/Environment.hpp
     src/Plugin/I_Environment.cpp

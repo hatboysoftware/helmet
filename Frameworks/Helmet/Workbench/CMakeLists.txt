@@ -10,6 +10,7 @@ include(Utilities)
 
 set (Helmet.Workbench_SRC
     src/I_Controller.cpp
+    src/I_Entity.cpp
     src/I_Event.cpp
     src/I_Frame.cpp
     src/I_Menu.cpp

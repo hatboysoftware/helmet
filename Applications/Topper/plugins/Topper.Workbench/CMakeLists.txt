@@ -11,9 +11,15 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${HELMET_INCLUDE_DIRS} ${wxWidg
 include(Utilities)
 
 set (Topper.Workbench_SRC
+    src/Action.cpp
+    src/Action.hpp
     src/Configuration.hpp
     src/Connection.cpp
     src/Connection.hpp
+    src/Entity.cpp
+    src/Entity.hpp
+    src/EntityFactory.cpp
+    src/EntityFactory.hpp
     src/Event.cpp
     src/Event.hpp
     src/Frame.cpp
@@ -38,6 +44,8 @@ set (Topper.Workbench_SRC
     src/NotebookPage.hpp
     src/Plugin.cpp
     src/Plugin.hpp
+    src/RootEntity.cpp
+    src/RootEntity.hpp
     src/StatusBar.cpp
     src/StatusBar.hpp
     src/TopFrame.cpp
@@ -46,6 +54,10 @@ set (Topper.Workbench_SRC
     src/View.hpp
     src/Workbench.cpp
     src/Workbench.hpp
+    src/WorkspaceModel.cpp
+    src/WorkspaceModel.hpp
+    src/WorkspaceView.cpp
+    src/WorkspaceView.hpp
 )
 
 set (Topper.Workbench_DEFINITIONS
