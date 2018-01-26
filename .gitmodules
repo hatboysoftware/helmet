@@ -1,0 +1,4 @@
+[submodule "3rdParty/wxfreechart"]
+	path = 3rdParty/wxfreechart
+	url = https://github.com/IGNF/wxfreechart.git
+	branch = master
