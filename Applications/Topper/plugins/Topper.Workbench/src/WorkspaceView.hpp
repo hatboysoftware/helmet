@@ -28,8 +28,6 @@ class WorkspaceView
     /// @name Types
     /// @{
 public:
-    typedef boost::shared_ptr<I_NotebookPage>                   pNotebookPage_type;
-    typedef boost::shared_ptr<Helmet::Workbench::I_Workbench>   pWorkbench_type;
     typedef boost::shared_ptr<Helmet::Workbench::I_Entity>      pEntity_type;
     /// @}
 
@@ -59,7 +57,7 @@ public:
     void modelUpdate(Helmet::Core::Event::I_Event& _event) override;
     /// @}
 
-    /// @name ProjectView implementation
+    /// @name WorkspaceView implementation
     /// @{
 public:
     wxTreeItemId getItemByName(const std::string& _name);

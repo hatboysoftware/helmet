@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(Helmet)
+project(Helmet CXX)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -23,7 +23,10 @@ if (NOT ROOT_BINARY_DIR)
     set(ROOT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 endif (NOT ROOT_BINARY_DIR)
 
-set (CMAKE_MODULE_PATH ${ROOT_SOURCE_DIR}/CMake/Modules ${CMAKE_MODULE_PATH})
+set (CMAKE_MODULE_PATH
+        ${ROOT_SOURCE_DIR}/CMake/Modules
+        ${ROOT_BINARY_DIR}/3rdParty/wxfreechart
+        ${CMAKE_MODULE_PATH})
 list (REMOVE_DUPLICATES CMAKE_MODULE_PATH)
 
 set (COMPONENTS

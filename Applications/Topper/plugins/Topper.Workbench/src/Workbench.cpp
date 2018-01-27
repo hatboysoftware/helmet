@@ -12,9 +12,11 @@
 #include "LogView.hpp"
 #include "LogModel.hpp"
 #include "Notebook.hpp"
+#include "TickerTableView.hpp"
+#include "TickerChartView.hpp"
+#include "TickerDataModel.hpp"
+#include "WorkspaceView.hpp"
 
-#include <Helmet/Core/Plugin/I_Environment.hpp>
-#include <Helmet/Workbench/I_MenuBar.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Topper {
@@ -73,7 +75,15 @@ void Workbench::initialize()
 
     auto& leftNotebook = m_pTopFrame->getLeftNotebook();
 
+
     auto& centerNotebook = m_pTopFrame->getCenterNotebook();
+    auto tickerTableView = new TickerTableView(*this, centerNotebook, "Ticker Data");
+    auto tickerChartView = new TickerChartView(*this, centerNotebook, "Ticker Data");
+    auto tickerDataModel = new TickerDataModel(m_pEnvironment);
+    tickerDataModel->subscribe(*tickerTableView);
+    tickerDataModel->subscribe(*tickerChartView);
+    centerNotebook.addPage(*tickerTableView);
+    centerNotebook.addPage(*tickerChartView);
 
     m_pTopFrame->show(true);
 }

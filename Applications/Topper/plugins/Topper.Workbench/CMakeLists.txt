@@ -5,8 +5,9 @@ project (Topper.Workbench)
 find_package(Helmet REQUIRED)
 find_Package (wxWidgets REQUIRED COMPONENTS aui adv base core gl REQUIRED QUIET)
 include (${wxWidgets_USE_FILE})
+include(wxfreechart-config)
 
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${HELMET_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS})
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS} ${HELMET_INCLUDE_DIRS} ${wxWidgets_INCLUDE_DIRS} ${wxfreechart_INCLUDE_DIRS})
 
 include(Utilities)
 
@@ -48,6 +49,12 @@ set (Topper.Workbench_SRC
     src/RootEntity.hpp
     src/StatusBar.cpp
     src/StatusBar.hpp
+    src/TickerChartView.cpp
+    src/TickerChartView.hpp
+    src/TickerDataModel.cpp
+    src/TickerDataModel.hpp
+    src/TickerTableView.cpp
+    src/TickerTableView.hpp
     src/TopFrame.cpp
     src/TopFrame.hpp
     src/View.cpp
@@ -66,6 +73,6 @@ set (Topper.Workbench_DEFINITIONS
 
 add_definitions(${Topper.Workbench_DEFINITIONS})
 add_library(Topper.Workbench SHARED ${Topper.Workbench_SRC})
-add_dependencies(Topper.Workbench Helmet.Core Helmet.Workbench)
-target_link_libraries(Topper.Workbench Helmet.Core Helmet.Workbench ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
+add_dependencies(Topper.Workbench Helmet.Core Helmet.Workbench wxfreechart)
+target_link_libraries(Topper.Workbench Helmet.Core Helmet.Workbench wxfreechart ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
 set_target_properties (Topper.Workbench PROPERTIES INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
