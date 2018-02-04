@@ -32,10 +32,7 @@ ModuleService::ModuleService()
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-ModuleService::~ModuleService()
-{
-}
-
+ModuleService::~ModuleService() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 I_ModuleService::pModule_type
 ModuleService::load(const std::string& _moduleName)

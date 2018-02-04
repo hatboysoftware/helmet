@@ -37,15 +37,15 @@ public:
     /// @name I_ModuleService implementation
     /// @{
 public:
-    virtual pModule_type load(const std::string& _moduleName) override;
-    virtual void unload(pModule_type _pModule) override;
+    pModule_type load(const std::string& _moduleName) override;
+    void unload(pModule_type _pModule) override;
     /// @}
 
     /// @name 'Structors
     /// @{
 public:
-    ModuleService();
-    virtual ~ModuleService();
+     ModuleService();
+    ~ModuleService() override;
     /// @}
 
     /// @name Member variables

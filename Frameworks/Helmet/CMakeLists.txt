@@ -4,6 +4,9 @@ project (Frameworks.Helmet)
 
 set (MODULES
     Core
+    Workbench
+    Blockchain
+    Trading
 )
 
 foreach (SUBDIR ${MODULES})
