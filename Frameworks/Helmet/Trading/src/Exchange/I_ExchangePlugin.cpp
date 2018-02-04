@@ -5,22 +5,18 @@
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#include <Helmet/Application/I_Application.hpp>
+#include <Helmet/Trading/Exchange/I_ExchangePlugin.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Application {
+namespace Trading {
+namespace Exchange {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_Application::I_Application()
-{
-}
-
+I_ExchangePlugin::I_ExchangePlugin() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_Application::~I_Application()
-{
-}
-
+I_ExchangePlugin::~I_ExchangePlugin() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Application
+}   // namespace Exchange
+}   // namespace Trading
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

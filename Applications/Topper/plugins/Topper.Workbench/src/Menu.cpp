@@ -1,9 +1,9 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Hyperion Software Framework
+// Topper Trading Workbench
 //
-// Copyright (C) 2015 Hyperion Technology Group
+// Copyright (C) 2018 Hat Boy Software, Inc.
 //
-//  @author Matthew Alan Gray - <mgray@hyperiontg.com>
+//  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #include "Menu.hpp"
 #include "MenuBar.hpp"

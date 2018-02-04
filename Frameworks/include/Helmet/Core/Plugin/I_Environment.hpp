@@ -7,7 +7,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "../Configuration.hpp"
+#include <Helmet/Core/Configuration.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/noncopyable.hpp>

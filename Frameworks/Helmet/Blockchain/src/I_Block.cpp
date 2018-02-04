@@ -5,42 +5,16 @@
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#pragma once
-
-#include <Helmet/Core/Configuration.hpp>
+#include <Helmet/Blockchain/I_Block.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Core {
-namespace Utility {
+namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-
-class HELMET_CORE_DLL_LINK I_Cleanable
-{
-    /// @name Types
-    /// @{
-public:
-    /// @}
-
-    /// @name I_Cleanable interface
-    /// @{
-public:
-    virtual bool isDirty() const = 0;
-    virtual void setDirty() const = 0;
-    virtual void clean() const = 0;
-    /// @}
-
-    /// @name 'Structors
-    /// @{
-protected:
-             I_Cleanable();
-    virtual ~I_Cleanable();
-    /// @}
-
-};  // interface I_Cleanable
-
+I_Block::I_Block() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Utility
-}   // namespace Core
+I_Block::~I_Block() = default;
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+}   // namespace Blockchain
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

@@ -1,9 +1,9 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Hyperion Software Framework
+// Helmet Software Framework
 //
-// Copyright (C) 2015 Hyperion Technology Group
+// Copyright (C) 2018 Hat Boy Software, Inc.
 //
-//  @author Matthew Alan Gray - <mgray@hyperiontg.com>
+//  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
@@ -49,5 +49,5 @@ protected:
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Workbench
-}   // namespace Hyperion
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

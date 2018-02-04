@@ -7,32 +7,22 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
-
-#include <boost/noncopyable.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/shared_ptr.hpp>
-
-#ifdef HOST_POSIX
-#include <dlfcn.h>
-#elif __APPLE__
-#include <dlfcn.h>
-#endif //HOST_POSIX
+#include <Helmet/Trading/Configuration.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Application {
+namespace Trading {
+namespace Strategy {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_APPLICATION_DLL_LINK I_Application
-:   public boost::noncopyable
+class HELMET_TRADING_DLL_LINK I_Strategy
 {
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Module interface
+    /// @name I_Strategy interface
     /// @{
 public:
     /// @}
@@ -40,13 +30,14 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_Application();
-    virtual ~I_Application();
+             I_Strategy();
+    virtual ~I_Strategy();
     /// @}
 
-};  // interface I_Application
+};  // interface I_Strategy
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Application
+}   // namespace Strategy
+}   // namespace Trading
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

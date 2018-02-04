@@ -7,7 +7,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Trading/Configuration.hpp>
 
 #include <Helmet/Core/Plugin/I_Plugin.hpp>
 
@@ -20,36 +20,39 @@ namespace Core {
         class I_Environment;
     }   // namespace Plugin
 }   // namespace Core
-namespace Workbench {
-class I_Workbench;
+namespace Trading {
+namespace Exchange {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_WORKBENCH_DLL_LINK I_WorkbenchPlugin
+class I_Exchange;
+
+class HELMET_TRADING_DLL_LINK I_ExchangePlugin
 :   public Core::Plugin::I_Plugin
 {
     /// @name Types
     /// @{
 public:
     typedef boost::shared_ptr<Helmet::Core::Plugin::I_Environment>  pEnvironment_type;
-    typedef boost::shared_ptr<I_Workbench>                          pWorkbench_type;
+    typedef boost::shared_ptr<I_Exchange>                           pExchange_type;
     /// @}
 
-    /// @name I_WorkbenchPlugin interface
+    /// @name I_ExchangePlugin interface
     /// @{
 public:
-    virtual pWorkbench_type getWorkbench(pEnvironment_type _pEnvironment) const = 0;
+    virtual pExchange_type getExchange(pEnvironment_type _pEnvironment) const = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_WorkbenchPlugin();
-    virtual ~I_WorkbenchPlugin();
+             I_ExchangePlugin();
+    virtual ~I_ExchangePlugin();
     /// @}
 
-};  // interface I_WorkbenchPlugin
+};  // interface I_ExchangePlugin
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Workbench
+}   // namespace Exchange
+}   // namespace Trading
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

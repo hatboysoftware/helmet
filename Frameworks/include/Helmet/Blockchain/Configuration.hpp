@@ -29,48 +29,48 @@
 
 // Microsoft C++ compiler
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
-#    ifdef  HELMET_APPLICATION_EXPORTS
-#        define HELMET_APPLICATION_DLL_LINK __declspec(dllexport)
+#    ifdef  HELMET_BLOCKCHAIN_EXPORTS
+#        define HELMET_BLOCKCHAIN_DLL_LINK __declspec(dllexport)
 #    else
-#        define HELMET_APPLICATION_DLL_LINK __declspec(dllimport)
+#        define HELMET_BLOCKCHAIN_DLL_LINK __declspec(dllimport)
 #    endif
 #endif  // _MSC_VER
 
 // GNU C++ compiler
 #if defined(__GNUG__) && !defined(__INTEL_COMPILER)
 #    if (__GNUC__ >= 4) && !defined(HOST_CYGWIN) && !defined(HOST_SOLARIS)
-#        ifdef  HELMET_APPLICATION_EXPORTS
-#            define HELMET_APPLICATION_DLL_LINK __attribute__ ((visibility ("default")))
+#        ifdef  HELMET_BLOCKCHAIN_EXPORTS
+#            define HELMET_BLOCKCHAIN_DLL_LINK __attribute__ ((visibility ("default")))
 #        else
-#            define HELMET_APPLICATION_DLL_LINK __attribute__ ((visibility ("hidden")))
+#            define HELMET_BLOCKCHAIN_DLL_LINK __attribute__ ((visibility ("hidden")))
 #        endif
 #    else
-#        ifdef  HELMET_APPLICATION_EXPORTS
-#            define HELMET_APPLICATION_DLL_LINK // __declspec(dllexport)
+#        ifdef  HELMET_BLOCKCHAIN_EXPORTS
+#            define HELMET_BLOCKCHAIN_DLL_LINK // __declspec(dllexport)
 #        else
-#            define HELMET_APPLICATION_DLL_LINK // __declspec(dllimport)
+#            define HELMET_BLOCKCHAIN_DLL_LINK // __declspec(dllimport)
 #        endif
 #    endif
 #endif  // __GNUG__
 
 // Sun C++ compiler
 #if defined(__SUNPRO_CC)
-#    ifdef  HELMET_APPLICATION_EXPORTS
-#        define HELMET_APPLICATION_DLL_LINK   // ?
+#    ifdef  HELMET_BLOCKCHAIN_EXPORTS
+#        define HELMET_BLOCKCHAIN_DLL_LINK   // ?
 #    else
-#        define HELMET_APPLICATION_DLL_LINK   // ?
+#        define HELMET_BLOCKCHAIN_DLL_LINK   // ?
 #    endif
 #endif  // __SUNPRO_CC
 
 // Intel C++ compiler
 #if defined(__INTEL_COMPILER)
-#    ifdef  HELMET_APPLICATION_EXPORTS
-#        define HELMET_APPLICATION_DLL_LINK __declspec(dllexport)
+#    ifdef  HELMET_BLOCKCHAIN_EXPORTS
+#        define HELMET_BLOCKCHAIN_DLL_LINK __declspec(dllexport)
 #    else
-#        define HELMET_APPLICATION_DLL_LINK __declspec(dllimport)
+#        define HELMET_BLOCKCHAIN_DLL_LINK __declspec(dllimport)
 #    endif
 #endif  // __INTEL_COMPILER
 
-#ifndef HELMET_APPLICATION_DLL_LINK
-#    define HELMET_APPLICATION_DLL_LINK
-#endif  // ! HELMET_APPLICATION_EXPORTS
+#ifndef HELMET_BLOCKCHAIN_DLL_LINK
+#    define HELMET_BLOCKCHAIN_DLL_LINK
+#endif  // ! HELMET_BLOCKCHAIN_EXPORTS
