@@ -8,6 +8,26 @@ include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/include ${Boost_INCLUDE_D
 
 include(Utilities)
 
+set (Helmet.Workbench_HEADERS
+        Configuration.hpp
+        I_Controller.hpp
+        I_Entity.hpp
+        I_Event.hpp
+        I_Frame.hpp
+        I_Menu.hpp
+        I_MenuBar.hpp
+        I_MenuItem.hpp
+        I_Model.hpp
+        I_Notebook.hpp
+        I_NotebookPage.hpp
+        I_StatusBar.hpp
+        I_View.hpp
+        I_Workbench.hpp
+        I_WorkbenchPlugin.hpp
+)
+
+string(REGEX REPLACE "([^;]+)" "${HELMET_INCLUDE_DIRS}/Helmet/Workbench/\\1" Helmet.Workbench_HEADERS "${Helmet.Workbench_HEADERS}")
+
 set (Helmet.Workbench_SRC
     src/I_Controller.cpp
     src/I_Entity.cpp
@@ -30,7 +50,7 @@ set (Helmet.Workbench_DEFINITIONS
         -DBOOST_LOG_DYN_LINK)
 
 add_definitions(${Helmet.Workbench_DEFINITIONS})
-add_library(Helmet.Workbench SHARED ${Helmet.Workbench_SRC})
+add_library(Helmet.Workbench SHARED ${Helmet.Workbench_SRC} ${Helmet.Workbench_HEADERS})
 add_dependencies(Helmet.Workbench Helmet.Core)
 target_link_libraries(Helmet.Workbench Helmet.Core ${Boost_LIBRARIES})
 set_target_properties (Helmet.Workbench PROPERTIES INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)

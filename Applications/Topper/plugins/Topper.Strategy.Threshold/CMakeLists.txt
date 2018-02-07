@@ -26,6 +26,6 @@ set (Topper.Strategy.Threshold_DEFINITIONS
 
 add_definitions(${Topper.Strategy.Threshold_DEFINITIONS})
 add_library(Topper.Strategy.Threshold SHARED ${Topper.Strategy.Threshold_SRC})
-add_dependencies(Topper.Strategy.Threshold Helmet.Core Helmet.Workbench wxfreechart)
-target_link_libraries(Topper.Strategy.Threshold Helmet.Core Helmet.Workbench wxfreechart ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
+add_dependencies(Topper.Strategy.Threshold Helmet.Core Helmet.Trading wxfreechart)
+target_link_libraries(Topper.Strategy.Threshold Helmet.Core Helmet.Trading wxfreechart ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
 set_target_properties (Topper.Strategy.Threshold PROPERTIES INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
