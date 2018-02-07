@@ -4,6 +4,7 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #include "Menu.hpp"
 #include "MenuBar.hpp"
@@ -80,5 +81,5 @@ Menu::getMenuItems(I_MenuItemVisitor& _visitor)
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace TMPAST
+}   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

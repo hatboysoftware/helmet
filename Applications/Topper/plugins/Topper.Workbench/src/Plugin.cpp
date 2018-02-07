@@ -4,6 +4,7 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #include "Plugin.hpp"
 #include "Workbench.hpp"
@@ -46,5 +47,5 @@ Plugin::getWorkbench(pEnvironment_type _pEnvironment) const
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace TMPAST
+}   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

@@ -26,6 +26,6 @@ set (Topper.Exchange.Kraken_DEFINITIONS
 
 add_definitions(${Topper.Exchange.Kraken_DEFINITIONS})
 add_library(Topper.Exchange.Kraken SHARED ${Topper.Exchange.Kraken_SRC})
-add_dependencies(Topper.Exchange.Kraken Helmet.Core Helmet.Workbench wxfreechart)
-target_link_libraries(Topper.Exchange.Kraken Helmet.Core Helmet.Workbench wxfreechart ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
+add_dependencies(Topper.Exchange.Kraken Helmet.Core Helmet.Trading wxfreechart)
+target_link_libraries(Topper.Exchange.Kraken Helmet.Core Helmet.Trading wxfreechart ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
 set_target_properties (Topper.Exchange.Kraken PROPERTIES INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)

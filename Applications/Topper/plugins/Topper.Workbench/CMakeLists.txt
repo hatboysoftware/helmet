@@ -68,6 +68,7 @@ set (Topper.Workbench_SRC
 )
 
 set (Topper.Workbench_DEFINITIONS
+        -DTOPPER_WORKBENCH_EXPORTS
         -DBOOST_LOG_DYN_LINK)
 
 add_definitions(${Topper.Workbench_DEFINITIONS})

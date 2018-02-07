@@ -4,6 +4,7 @@ project (Frameworks.Helmet)
 
 set (MODULES
     Core
+    Enterprise
     Workbench
     Blockchain
     Trading
