@@ -16,6 +16,11 @@
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
+    namespace Core {
+        namespace Thread {
+            class I_Condition;
+        }   // namespace Thread
+    }   // namespace Core
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
@@ -36,7 +41,8 @@ public:
     /// @name I_ApplicationServer interface.
     /// @{
 public:
-    virtual boost::condition* start() = 0;
+    virtual Core::Thread::I_Condition* start() = 0;
+    virtual void stop() = 0;
     /// @}
 
     /// @name Inner classes

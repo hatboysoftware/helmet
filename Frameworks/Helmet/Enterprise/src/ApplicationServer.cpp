@@ -12,13 +12,263 @@
 namespace Helmet {
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-ApplicationServer::ApplicationServer() = default;
+ApplicationServer::ApplicationServer()
+:   m_sharedThreadPool(16, nullptr, true, true)
+,   m_installQueue(1, nullptr, true, false)
+,   m_shutdownQueue(1, nullptr, true, false)
+,   m_pStartCondition(Core::Thread::ConditionFactory::create())
+{
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-ApplicationServer::~ApplicationServer() = default;
+ApplicationServer::~ApplicationServer()
+{
+    Core::Thread::ConditionFactory::destroy(m_pStartCondition);
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-boost::condition*
+Core::Thread::I_Condition*
 ApplicationServer::start()
 {
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallationCompleteTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Internal Structures
+        /// @{
+    private:
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStartCompleteTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Internal Structures
+            /// @{
+        private:
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StartCompleteTask
+            :   public Core::Thread::ThreadPool::Task
+            {
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_condition.assertCondition();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                explicit StartCompleteTask(Core::Thread::I_Condition& _condition)
+                :   m_condition(_condition)
+                {
+                }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                Core::Thread::I_Condition&  m_condition;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            /// @}
+
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override
+            {
+                auto* pTask = new StartCompleteTask(m_condition);
+                m_installQueue.pushRequest(pTask);
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStartCompleteTask(Core::Thread::I_Condition& _condition,
+                                       Core::Thread::ThreadPool& _installQueue)
+            :   m_condition(_condition)
+            ,   m_installQueue(_installQueue)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            Core::Thread::I_Condition&  m_condition;
+            Core::Thread::ThreadPool&   m_installQueue;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        /// @}
+
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            auto* pTask = new PrepareToStartCompleteTask(m_condition, m_installQueue);
+            m_installQueue.pushRequest(pTask);
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        InstallationCompleteTask(Core::Thread::I_Condition& _condition,
+                                 Core::Thread::ThreadPool& _installQueue)
+        :   m_condition(_condition)
+        ,   m_installQueue(_installQueue)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        Core::Thread::ThreadPool&   m_installQueue;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    // Create the installation complete task and pass the condition into it.
+    auto* pTask = new InstallationCompleteTask(*m_pStartCondition, m_installQueue);
+
+    // Push the task onto the end of the queue
+    m_installQueue.pushRequest(pTask);
+
+    // Start the installation queue so that protocols and services will be
+    // installed.
+    m_installQueue.start();
+
+    return m_pStartCondition;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::stop()
+{
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallationQueueEmptyTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_condition.assertCondition();
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        explicit InstallationQueueEmptyTask(Core::Thread::I_Condition& _condition)
+        :   m_condition(_condition)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class ShutdownCompleteTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_condition.assertCondition();
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        explicit ShutdownCompleteTask(Core::Thread::I_Condition& _condition)
+        :   m_condition(_condition)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    // Create a condition to know when the installQueue is empty.
+    auto* pInstallerCondition = Core::Thread::ConditionFactory::create(false);
+
+    // Create the installation complete task and pass the condition into it.
+    auto* pInstallerTask = new InstallationQueueEmptyTask(*pInstallerCondition);
+
+    // Push the task onto the end of the queue
+    m_installQueue.pushRequest(pInstallerTask);
+
+    // Prepare to stop the installation queue so that no more protocols or
+    // services will be installed (at least not until the app server is
+    // restarted, if ever).
+    m_installQueue.prepareToStop();
+
+    // Wait for the install queue to be emptied.
+    pInstallerCondition->requireCondition();
+
+    // Destroy the condition
+    Core::Thread::ConditionFactory::destroy(pInstallerCondition);
+
+    // Stop the install queue
+    m_installQueue.stop();
+
+    // Create a condition to know when the shutdownQueue is finished.
+    auto* pShutdownCondition = Core::Thread::ConditionFactory::create(false);
+
+    // Create the shutdown complete task and pass the condition into it.
+    auto* pShutdownTask = new ShutdownCompleteTask(*pShutdownCondition);
+
+    // Push the task onto the end of the queue
+    m_shutdownQueue.pushRequest(pShutdownTask);
+
+    // Start the shutdown queue
+    m_shutdownQueue.start();
+
+    // Wait on the shutdown queue to completely start
+    m_shutdownQueue.requireStarted();
+
+    // Prepare to stop the shutdown queue so that no more tasks will
+    // be pushed onto it.
+    m_shutdownQueue.prepareToStop();
+
+    // Wait for the shutdown queue to be emptied.
+    pShutdownCondition->requireCondition();
+
+    // Destroy the condition
+    Core::Thread::ConditionFactory::destroy(pShutdownCondition);
+
+    // Stop the shutdown queue
+    m_shutdownQueue.stop();
+
+    // TODO Empty service collections
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
