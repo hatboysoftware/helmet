@@ -6,35 +6,46 @@
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
 //  @author Tony Richards - <trichards@indieHelmet.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#pragma once
 
-#include <Helmet/Core/Configuration.hpp>
+#include "Mutex.hpp"
+
+#include <iostream>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Core {
 namespace Thread {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-class I_Mutex;
+Mutex::Mutex()
+:   m_pMutex(new boost::mutex())
+{
+}
 
-class HELMET_CORE_DLL_LINK MutexFactory {
-    /// @name Types
-    /// @{
-public:
-    /// @}
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Mutex::Mutex(boost::mutex& _mutex)
+:   m_pMutex(&_mutex)
+{
+}
 
-    /// @name Factory methods
-    /// @{
-public:
-    /// Create a mutex.
-    /// Do not delete the returned object.  Call destroy() instead.
-    static I_Mutex *create();
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Mutex::~Mutex()
+{
+    delete m_pMutex;
+};
 
-    /// Destroy a condition.
-    static void destroy(I_Mutex *const _pMutex);
-    /// @}
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+Mutex::acquire()
+{
+    m_pMutex->lock();
+}
 
-};    // class ThreadFactory
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+Mutex::release()
+{
+    m_pMutex->unlock();
+}
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Thread

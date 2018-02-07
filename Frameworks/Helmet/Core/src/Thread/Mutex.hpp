@@ -8,7 +8,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "../I_Mutex.hpp"
+#include <Helmet/Core/Thread/I_Mutex.hpp>
 
 // C++
 #include <string>
@@ -17,7 +17,8 @@
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Threading {
+namespace Core {
+namespace Thread {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
 class Mutex
@@ -33,48 +34,34 @@ public:
     /// @name I_Mutex implementation
     /// @{
 public:
-    virtual void acquire();
-    virtual void release();
+    void acquire() override;
+    void release() override;
     /// @}
 
     /// @name Helper Functions
     /// @{
 public:
-    static const std::string& getNameOfError(const int _errNo);
+    static const std::string &getNameOfError(const int _errNo);
     /// @}
 
     /// @name 'Structors
     /// @{
 public:
-             Mutex();
-    virtual ~Mutex();
-    /// @}
-
-    /// @name Accessor functions
-    /// @{
-protected:
-    inline boost::mutex&
-    getNativeMutex()
-    {
-        return m_mutex;
-    }
-
-    inline const boost::mutex&
-    getNativeMutex() const
-    {
-        return m_mutex;
-    }
+     Mutex();
+     Mutex(boost::mutex& _mutex);
+    ~Mutex() override;
     /// @}
 
     /// @name Member variables
     /// @{
 private:
-    boost::mutex    m_mutex;
+    boost::mutex* m_pMutex;
     /// @}
 
-};  // class Mutex_posix
+};  // class Mutex
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Threading
+}   // namespace Thread
+}   // namespace Core
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
