@@ -47,6 +47,7 @@ set (Helmet.Enterprise_HEADERS
         I_ResourceLocation.hpp
         I_Response.hpp
         I_ResponseHandler.hpp
+        I_StartupShutdownParticipant.hpp
         I_SessionEvent.hpp
         I_TimeoutHandler.hpp
         )
@@ -95,6 +96,7 @@ set (Helmet.Enterprise_SRC
         src/I_ResourceLocation.cpp
         src/I_Response.cpp
         src/I_ResponseHandler.cpp
+        src/I_StartupShutdownParticipant.cpp
         src/I_TimeoutHandler.cpp
         src/NetworkManager.cpp
         src/NetworkManager.hpp

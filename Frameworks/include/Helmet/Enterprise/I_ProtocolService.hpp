@@ -8,7 +8,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/I_StartupShutdownParticipant.hpp>
 
 #include <memory>
 
@@ -24,6 +24,7 @@ class I_MessageHeader;
 class I_Event; // TODO Where does this belong?
 
 class HELMET_ENTERPRISE_DLL_LINK I_ProtocolService
+:   public I_StartupShutdownParticipant
 {
     /// @name Types
     /// @{
@@ -37,6 +38,8 @@ public:
     /// @name I_ProtocolService interface.
     /// @{
 public:
+    virtual const std::string& getName() const = 0;
+
     /// Get the application server which is hosting this protocol service.
     /// This must be the same reference that was passed to the factory create
     /// method.
@@ -61,20 +64,13 @@ public:
     /// This event is fired when a connection is established.
     /// The payload for the event is the pEndpoint_type of the
     /// destination endpoint that was disconnected.
-    virtual Event::I_Event& getConnectedEvent() = 0;
+//    virtual Event::I_Event& getConnectedEvent() = 0;
 
     /// Get the "Disconnected" event.
     /// This event is fired when a connection is established.
     /// The payload for the event is the pEndpoint_type of the
     /// destination endpoint that was disconnected.
-    virtual Event::I_Event& getDisconnectedEvent() = 0;
-    /// @}
-
-    /// @name Static methods
-    /// @{
-public:
-    static const std::string& getNamespace();
-    static const std::string& getExtensionPointName();
+//    virtual Event::I_Event& getDisconnectedEvent() = 0;
     /// @}
 
     /// @name Events

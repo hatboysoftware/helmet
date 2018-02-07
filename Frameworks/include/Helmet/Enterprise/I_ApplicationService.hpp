@@ -8,7 +8,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/I_StartupShutdownParticipant.hpp>
 
 #include <memory>
 
@@ -20,20 +20,22 @@ namespace Helmet {
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 class I_ApplicationServer;
+class I_Endpoint;
 class I_Message;
 class I_MessageType;
 class I_ResourceLocation;
 
 class HELMET_ENTERPRISE_DLL_LINK I_ApplicationService
-:   public I_RequestHandler
+:   public I_StartupShutdownParticipant
+,   public I_RequestHandler
 {
     /// @name Types
     /// @{
 public:
-    typedef std::shared_ptr<I_Message>                      pMessage_type;
-    typedef std::shared_ptr<I_MessageType>             pMessageType_type;
-    typedef std::shared_ptr<I_Endpoint>    pEndpoint_type;
-    typedef std::shared_ptr<I_ResourceLocation>        pResourceLocation_type;
+    typedef std::shared_ptr<I_Message>          pMessage_type;
+    typedef std::shared_ptr<I_MessageType>      pMessageType_type;
+    typedef std::shared_ptr<I_Endpoint>         pEndpoint_type;
+    typedef std::shared_ptr<I_ResourceLocation> pResourceLocation_type;
     /// @}
 
     /// @name I_ApplicationService interface.
@@ -57,13 +59,6 @@ public:
     /// Handle a message
     /// Messages are one-way notifications and are not expected to return a result.
     virtual void handleMessage(pMessage_type _pMessage) = 0;
-    /// @}
-
-    /// @name Static methods
-    /// @{
-public:
-    static const std::string& getNamespace();
-    static const std::string& getExtensionPointName();
     /// @}
 
     /// @name Events

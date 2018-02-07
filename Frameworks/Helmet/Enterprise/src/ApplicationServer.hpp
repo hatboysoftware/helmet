@@ -31,11 +31,18 @@ public:
 public:
     Core::Thread::I_Condition* start() override;
     void stop() override;
+    void installApplication(pApplicationService_type _pApplicationService,
+                            pResourceLocation_type _pRootLocation) override;
+    void installProtocol(pProtocolService_type _pProtocolService) override;
     /// @}
 
     /// @name ApplicationServer implementation
     /// @{
 public:
+    void handleInstallApplication(pApplicationService_type _pApplicationService,
+                                  pResourceLocation_type _pRootLocation);
+    void handleInstallProtocol(pProtocolService_type _pProtocolService);
+    Core::Thread::ThreadPool& getSharedThreadPool() { return m_sharedThreadPool; }
     /// @}
 
     /// @name Events
@@ -65,6 +72,20 @@ private:
     /// plus the thread that is used to perform
     /// the shutdown.
     Core::Thread::ThreadPool    m_shutdownQueue;
+
+    /// Guard for application services consistency
+    Core::Thread::I_Mutex*      m_pApplicationGuard;
+
+    /// Collection of installed application services
+    typedef std::map<pResourceLocation_type, pApplicationService_type>  ApplicationServices_type;
+    ApplicationServices_type    m_applicationServices;
+
+    /// Guard for protocol services consistency
+    Core::Thread::I_Mutex*      m_pProtocolGuard;
+
+    /// Collection of installed protocol services
+    typedef std::map<std::string, pProtocolService_type>    ProtocolServices_type;
+    ProtocolServices_type       m_protocolServices;
 
     Core::Thread::I_Condition*  m_pStartCondition;
     /// @}

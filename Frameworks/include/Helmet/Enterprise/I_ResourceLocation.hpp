@@ -8,11 +8,12 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/I_ApplicationService.hpp>
 
 #include <memory>
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -28,11 +29,13 @@ class HELMET_ENTERPRISE_DLL_LINK I_ResourceLocation
     /// @name Types
     /// @{
 public:
+    typedef boost::shared_ptr<I_ApplicationService> pApplicationService_type;
     /// @}
 
     /// @name I_ResourceLocation interface.
     /// @{
 public:
+    virtual void setApplicationService(pApplicationService_type _pApplicationService) = 0;
     /// Get the location as a string.
     virtual const std::string& toString() const = 0;
 
@@ -49,8 +52,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_ResourceLocation() = default;
-    virtual ~I_ResourceLocation() = default;
+             I_ResourceLocation();
+    virtual ~I_ResourceLocation();
     /// @}
 
 };  // interface I_ResourceLocation

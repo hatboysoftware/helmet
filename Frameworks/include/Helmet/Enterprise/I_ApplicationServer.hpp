@@ -7,10 +7,11 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/Configuration.hpp>
 
 #include <boost/noncopyable.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 
@@ -23,6 +24,9 @@ namespace Helmet {
     }   // namespace Core
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+class I_ApplicationService;
+class I_ProtocolService;
+class I_ResourceLocation;
 
 /// Base Application Server.
 class HELMET_ENTERPRISE_DLL_LINK I_ApplicationServer
@@ -36,6 +40,9 @@ public:
     /// @name Types
     /// @{
 public:
+    typedef boost::shared_ptr<I_ApplicationService>     pApplicationService_type;
+    typedef boost::shared_ptr<I_ProtocolService>        pProtocolService_type;
+    typedef boost::shared_ptr<I_ResourceLocation>       pResourceLocation_type;
     /// @}
 
     /// @name I_ApplicationServer interface.
@@ -43,6 +50,9 @@ public:
 public:
     virtual Core::Thread::I_Condition* start() = 0;
     virtual void stop() = 0;
+    virtual void installApplication(pApplicationService_type _pApplicationService,
+                                    pResourceLocation_type _pRootLocation) = 0;
+    virtual void installProtocol(pProtocolService_type _pProtocolService) = 0;
     /// @}
 
     /// @name Inner classes
