@@ -115,9 +115,8 @@ public:
         /// @name 'Structors
         /// @{
     protected:
-        I_PooledTaskAllocator() {}
-
-        virtual ~I_PooledTaskAllocator() {}
+                 I_PooledTaskAllocator() = default;
+        virtual ~I_PooledTaskAllocator() = default;
         /// @}
 
     };  // interface I_PooledTaskAllocator

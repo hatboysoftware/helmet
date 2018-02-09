@@ -8,50 +8,48 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Enterprise/Configuration.hpp>
+#include <Helmet/Blockchain/Configuration.hpp>
 
-#include <memory>
+#include <Helmet/Core/Plugin/I_Plugin.hpp>
 
-#include <Helmet/Enterprise/I_Message.hpp>
-
-#include <boost/noncopyable.hpp>
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Enterprise {
+    namespace Enterprise {
+        class I_ApplicationServer;
+    }   // namespace Core
+namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-class I_ResponseHandler;
 
-class HELMET_ENTERPRISE_DLL_LINK I_Request
-:   public virtual I_Message
+class I_BlockchainNode;
+
+class HELMET_BLOCKCHAIN_DLL_LINK I_BlockchainPlugin
+:   public Core::Plugin::I_Plugin
 {
     /// @name Types
     /// @{
 public:
-    typedef boost::shared_ptr<I_ResponseHandler>    pResponseHandler_type;
+    typedef boost::shared_ptr<I_BlockchainNode>                     pBlockchainNode_type;
     /// @}
 
-    /// @name I_Request interface.
+    /// @name I_BlockchainPlugin interface
     /// @{
 public:
-    virtual Core::Thread::ThreadPool::Task* sendRequestTask(pResponseHandler_type _pResponseHandler) const = 0;
-    /// @}
-
-    /// @name Events
-    /// @{
-public:
+    virtual pBlockchainNode_type getNode(Enterprise::I_ApplicationServer& _applicationServer,
+                                         const std::string& _name) const = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Request() = default;
-    virtual ~I_Request() = default;
+             I_BlockchainPlugin();
+    virtual ~I_BlockchainPlugin();
     /// @}
 
-};  // interface I_Request
+};  // interface I_BlockchainPlugin
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Enterprise
+}   // namespace Blockchain
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

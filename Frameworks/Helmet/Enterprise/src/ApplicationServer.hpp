@@ -12,6 +12,8 @@
 
 #include <Helmet/Core/Thread/ThreadPool.hpp>
 
+#include <map>
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Enterprise {
@@ -34,6 +36,10 @@ public:
     void installApplication(pApplicationService_type _pApplicationService,
                             pResourceLocation_type _pRootLocation) override;
     void installProtocol(pProtocolService_type _pProtocolService) override;
+    pApplicationService_type getApplication(pResourceLocation_type _pServiceLocation) const override;
+    pProtocolService_type getProtocol(const std::string& _protocolName) override;
+    void handleMessage(pMessage_type _pMessage) override;
+    void handleRequest(pRequest_type _pRequest, pResponseHandler_type _pResponseHandler) override;
     /// @}
 
     /// @name ApplicationServer implementation

@@ -10,19 +10,22 @@
 
 #include <Helmet/Blockchain/Configuration.hpp>
 
+#include <Helmet/Enterprise/I_ApplicationService.hpp>
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_Node
+class HELMET_BLOCKCHAIN_DLL_LINK I_BlockchainNode
+:   public Enterprise::I_ApplicationService
 {
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Block interface
+    /// @name I_BlockchainNode interface
     /// @{
 public:
     /// @}
@@ -30,8 +33,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_Node();
-    virtual ~I_Node();
+             I_BlockchainNode();
+    virtual ~I_BlockchainNode();
     /// @}
 
 };  // class I_Node

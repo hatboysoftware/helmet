@@ -5,6 +5,7 @@ project (Topper.Plugins)
 set (PLUGINS
     Topper.Exchange.Kraken
     Topper.Strategy.Threshold
+    Topper.Transaction.Blockchain
     Topper.Workbench
 )
 

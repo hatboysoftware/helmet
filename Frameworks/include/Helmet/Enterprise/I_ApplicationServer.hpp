@@ -27,6 +27,9 @@ namespace Enterprise {
 class I_ApplicationService;
 class I_ProtocolService;
 class I_ResourceLocation;
+class I_Message;
+class I_Request;
+class I_ResponseHandler;
 
 /// Base Application Server.
 class HELMET_ENTERPRISE_DLL_LINK I_ApplicationServer
@@ -43,6 +46,9 @@ public:
     typedef boost::shared_ptr<I_ApplicationService>     pApplicationService_type;
     typedef boost::shared_ptr<I_ProtocolService>        pProtocolService_type;
     typedef boost::shared_ptr<I_ResourceLocation>       pResourceLocation_type;
+    typedef boost::shared_ptr<I_Message>                pMessage_type;
+    typedef boost::shared_ptr<I_Request>                pRequest_type;
+    typedef boost::shared_ptr<I_ResponseHandler>        pResponseHandler_type;
     /// @}
 
     /// @name I_ApplicationServer interface.
@@ -53,6 +59,10 @@ public:
     virtual void installApplication(pApplicationService_type _pApplicationService,
                                     pResourceLocation_type _pRootLocation) = 0;
     virtual void installProtocol(pProtocolService_type _pProtocolService) = 0;
+    virtual pApplicationService_type getApplication(pResourceLocation_type _pServiceLocation) const = 0;
+    virtual pProtocolService_type getProtocol(const std::string& _protocolName) = 0;
+    virtual void handleMessage(pMessage_type _pMessage) = 0;
+    virtual void handleRequest(pRequest_type _pRequest, pResponseHandler_type _pResponseHandler) = 0;
     /// @}
 
     /// @name Inner classes

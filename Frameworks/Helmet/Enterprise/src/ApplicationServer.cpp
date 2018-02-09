@@ -11,6 +11,7 @@
 #include <Helmet/Enterprise/I_ApplicationService.hpp>
 #include <Helmet/Enterprise/I_ResourceLocation.hpp>
 #include <Helmet/Enterprise/I_ProtocolService.hpp>
+#include <Helmet/Enterprise/I_Request.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -702,7 +703,70 @@ ApplicationServer::installProtocol(pProtocolService_type _pProtocolService)
     //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
     /// @}
 
+    /// Schedule the installation of the protocol service.
+    auto* pTask = new InstallProtocolServiceTask(
+            *this,
+            _pProtocolService,
+            m_installQueue,
+            m_shutdownQueue
+    );
 
+    m_installQueue.pushRequest(pTask);
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+ApplicationServer::pApplicationService_type
+ApplicationServer::getApplication(pResourceLocation_type _pServiceLocation) const
+{
+    m_pStartCondition->requireCondition();
+
+    Core::Thread::CriticalSection lock(m_pApplicationGuard);
+
+    ApplicationServices_type::const_iterator iter = m_applicationServices.find(_pServiceLocation);
+
+    if (iter != m_applicationServices.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        return pApplicationService_type();
+    }
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+ApplicationServer::pProtocolService_type
+ApplicationServer::getProtocol(const std::string &_protocolName)
+{
+    m_pStartCondition->requireCondition();
+
+    Core::Thread::CriticalSection lock(m_pProtocolGuard);
+
+    ProtocolServices_type::iterator iter = m_protocolServices.find(_protocolName);
+
+    if (iter != m_protocolServices.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        return pProtocolService_type();
+    }
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleMessage(pMessage_type _pMessage)
+{
+    m_sharedThreadPool.pushRequest(_pMessage->sendMessageTask());
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleRequest(pRequest_type _pRequest,
+                                 pResponseHandler_type _pResponseHandler)
+{
+    m_sharedThreadPool.pushRequest(_pRequest->sendRequestTask(_pResponseHandler));
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
