@@ -8,7 +8,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/Configuration.hpp>
 
 #include <memory>
 
@@ -47,8 +47,8 @@ public:
     /// @name 'Structors
     /// @{
 protected:
-             I_RequestHandler() = default;
-    virtual ~I_RequestHandler() = default;
+             I_RequestHandler();
+    virtual ~I_RequestHandler();
     /// @}
 
 };  // interface I_RequestHandler

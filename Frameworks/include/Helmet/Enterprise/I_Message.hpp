@@ -8,14 +8,14 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/Configuration.hpp>
 
-#include <memory>
-
-#include <Helmet/Enterprise/I_ResourceLocation.hpp>
+#include <Helmet/Core/Thread/ThreadPool.hpp>
 
 #include <boost/noncopyable.hpp>
 #include <boost/cstdint.hpp>
+
+#include <memory>
 
 namespace boost {
     namespace archive {
@@ -28,9 +28,10 @@ namespace boost {
 namespace Helmet {
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+class I_Endpoint;
 class I_MessageHeader;
 class I_MessageType;
-class I_Endpoint;
+class I_ResourceLocation;
 
 /// I_Message interface.
 class HELMET_ENTERPRISE_DLL_LINK I_Message
@@ -83,6 +84,9 @@ public:
     /// The protocol adapter serializes the header and then call this
     /// method to serialize the rest of the message.
     virtual void serialize(boost::archive::polymorphic_oarchive& _archive, const int _version) = 0;
+
+    /// Get a task for asynchronously sending the message.
+    virtual Core::Thread::ThreadPool::Task* sendMessageTask() const = 0;
     /// @}
 
     /// @name Events

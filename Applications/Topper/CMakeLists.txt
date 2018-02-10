@@ -20,7 +20,7 @@ set (Topper_DEFINITIONS
 
 add_definitions(${Topper_DEFINITIONS})
 add_executable(Topper ${Topper_SRC})
-target_link_libraries(Topper Helmet.Core Helmet.Workbench ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
+target_link_libraries(Topper Helmet.Core Helmet.Enterprise Helmet.Blockchain Helmet.Workbench ${Boost_LIBRARIES} ${wxWidgets_LIBRARIES})
 set_target_properties (Topper PROPERTIES INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(plugins)

@@ -8,17 +8,783 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #include "ApplicationServer.hpp"
 
+#include <Helmet/Enterprise/I_ApplicationService.hpp>
+#include <Helmet/Enterprise/I_ResourceLocation.hpp>
+#include <Helmet/Enterprise/I_ProtocolService.hpp>
+#include <Helmet/Enterprise/I_Request.hpp>
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-ApplicationServer::ApplicationServer() = default;
+ApplicationServer::ApplicationServer()
+:   m_sharedThreadPool(16, nullptr, true, true)
+,   m_installQueue(1, nullptr, true, false)
+,   m_shutdownQueue(1, nullptr, true, false)
+,   m_pApplicationGuard(Core::Thread::MutexFactory::create())
+,   m_applicationServices()
+,   m_pProtocolGuard(Core::Thread::MutexFactory::create())
+,   m_protocolServices()
+,   m_pStartCondition(Core::Thread::ConditionFactory::create())
+{
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-ApplicationServer::~ApplicationServer() = default;
+ApplicationServer::~ApplicationServer()
+{
+    Core::Thread::MutexFactory::destroy(m_pProtocolGuard);
+    Core::Thread::MutexFactory::destroy(m_pApplicationGuard);
+    Core::Thread::ConditionFactory::destroy(m_pStartCondition);
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-boost::condition*
+Core::Thread::I_Condition*
 ApplicationServer::start()
 {
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallationCompleteTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Internal Structures
+        /// @{
+    private:
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStartCompleteTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Internal Structures
+            /// @{
+        private:
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StartCompleteTask
+            :   public Core::Thread::ThreadPool::Task
+            {
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_condition.assertCondition();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                explicit StartCompleteTask(Core::Thread::I_Condition& _condition)
+                :   m_condition(_condition)
+                {
+                }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                Core::Thread::I_Condition&  m_condition;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            /// @}
+
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override
+            {
+                auto* pTask = new StartCompleteTask(m_condition);
+                m_installQueue.pushRequest(pTask);
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStartCompleteTask(Core::Thread::I_Condition& _condition,
+                                       Core::Thread::ThreadPool& _installQueue)
+            :   m_condition(_condition)
+            ,   m_installQueue(_installQueue)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            Core::Thread::I_Condition&  m_condition;
+            Core::Thread::ThreadPool&   m_installQueue;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        /// @}
+
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            auto* pTask = new PrepareToStartCompleteTask(m_condition, m_installQueue);
+            m_installQueue.pushRequest(pTask);
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        InstallationCompleteTask(Core::Thread::I_Condition& _condition,
+                                 Core::Thread::ThreadPool& _installQueue)
+        :   m_condition(_condition)
+        ,   m_installQueue(_installQueue)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        Core::Thread::ThreadPool&   m_installQueue;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    // Create the installation complete task and pass the condition into it.
+    auto* pTask = new InstallationCompleteTask(*m_pStartCondition, m_installQueue);
+
+    // Push the task onto the end of the queue
+    m_installQueue.pushRequest(pTask);
+
+    // Start the installation queue so that protocols and services will be
+    // installed.
+    m_installQueue.start();
+
+    return m_pStartCondition;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::stop()
+{
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallationQueueEmptyTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_condition.assertCondition();
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        explicit InstallationQueueEmptyTask(Core::Thread::I_Condition& _condition)
+        :   m_condition(_condition)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class ShutdownCompleteTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_condition.assertCondition();
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        explicit ShutdownCompleteTask(Core::Thread::I_Condition& _condition)
+        :   m_condition(_condition)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        Core::Thread::I_Condition&  m_condition;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    // Create a condition to know when the installQueue is empty.
+    auto* pInstallerCondition = Core::Thread::ConditionFactory::create(false);
+
+    // Create the installation complete task and pass the condition into it.
+    auto* pInstallerTask = new InstallationQueueEmptyTask(*pInstallerCondition);
+
+    // Push the task onto the end of the queue
+    m_installQueue.pushRequest(pInstallerTask);
+
+    // Prepare to stop the installation queue so that no more protocols or
+    // services will be installed (at least not until the app server is
+    // restarted, if ever).
+    m_installQueue.prepareToStop();
+
+    // Wait for the install queue to be emptied.
+    pInstallerCondition->requireCondition();
+
+    // Destroy the condition
+    Core::Thread::ConditionFactory::destroy(pInstallerCondition);
+
+    // Stop the install queue
+    m_installQueue.stop();
+
+    // Create a condition to know when the shutdownQueue is finished.
+    auto* pShutdownCondition = Core::Thread::ConditionFactory::create(false);
+
+    // Create the shutdown complete task and pass the condition into it.
+    auto* pShutdownTask = new ShutdownCompleteTask(*pShutdownCondition);
+
+    // Push the task onto the end of the queue
+    m_shutdownQueue.pushRequest(pShutdownTask);
+
+    // Start the shutdown queue
+    m_shutdownQueue.start();
+
+    // Wait on the shutdown queue to completely start
+    m_shutdownQueue.requireStarted();
+
+    // Prepare to stop the shutdown queue so that no more tasks will
+    // be pushed onto it.
+    m_shutdownQueue.prepareToStop();
+
+    // Wait for the shutdown queue to be emptied.
+    pShutdownCondition->requireCondition();
+
+    // Destroy the condition
+    Core::Thread::ConditionFactory::destroy(pShutdownCondition);
+
+    // Stop the shutdown queue
+    m_shutdownQueue.stop();
+
+    // TODO Empty service collections
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::installApplication(pApplicationService_type _pApplicationService,
+                                      pResourceLocation_type _pRootLocation)
+{
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallApplicationServiceTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Internal Structures
+        /// @{
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStartApplicationServiceTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Internal Structures
+            /// @{
+        private:
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StartApplicationServiceTask
+            :   public Core::Thread::ThreadPool::Task
+            {
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_pApplicationService->start();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                StartApplicationServiceTask(pApplicationService_type _pApplicationService)
+                :   m_pApplicationService(_pApplicationService)
+                {
+                }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                pApplicationService_type    m_pApplicationService;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StopApplicationServiceTask
+            :   public Core::Thread::ThreadPool::Task{
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_pApplicationService->stop();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                StopApplicationServiceTask(pApplicationService_type _pApplicationService)
+                :   m_pApplicationService(_pApplicationService)
+                {
+                }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                pApplicationService_type    m_pApplicationService;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            /// @}
+
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override
+            {
+                auto* pCondition = m_pApplicationService->prepareToStart(m_server.getSharedThreadPool());
+                if (pCondition != NULL)
+                {
+                    pCondition->requireCondition();
+                }
+
+                auto* pStartTask = new StartApplicationServiceTask(m_pApplicationService);
+                auto* pStopTask = new StopApplicationServiceTask(m_pApplicationService);
+                m_installQueue.pushRequest(pStartTask);
+                m_shutdownQueue.pushRequest(pStopTask);
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStartApplicationServiceTask(ApplicationServer& _server,
+                                                 pApplicationService_type _pApplicationService,
+                                                 Core::Thread::ThreadPool& _installQueue,
+                                                 Core::Thread::ThreadPool& _shutdownQueue)
+            :   m_server(_server)
+            ,   m_pApplicationService(_pApplicationService)
+            ,   m_installQueue(_installQueue)
+            ,   m_shutdownQueue(_shutdownQueue)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            ApplicationServer&          m_server;
+            pApplicationService_type    m_pApplicationService;
+            Core::Thread::ThreadPool&   m_installQueue;
+            Core::Thread::ThreadPool&   m_shutdownQueue;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStopApplicationServiceTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override {
+                auto* pCondition = m_pApplicationService->prepareToStop();
+                if (pCondition != nullptr)
+                {
+                    pCondition->requireCondition();
+                }
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStopApplicationServiceTask(pApplicationService_type _pApplicationService)
+            :   m_pApplicationService(_pApplicationService)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            pApplicationService_type    m_pApplicationService;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        /// @}
+
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_server.handleInstallApplication(m_pApplicationService, m_pRootLocation);
+            auto* pStartTask = new PrepareToStartApplicationServiceTask(
+                    m_server,
+                    m_pApplicationService,
+                    m_installQueue,
+                    m_shutdownQueue
+            );
+
+            auto* pStopTask = new PrepareToStopApplicationServiceTask(
+                    m_pApplicationService
+            );
+
+            m_installQueue.pushRequest(pStartTask);
+            m_shutdownQueue.pushRequest(pStopTask);
+            // TODO set up application install handler.
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        InstallApplicationServiceTask(ApplicationServer& _server,
+                                      pApplicationService_type _pApplicationService,
+                                      pResourceLocation_type _pRootLocation,
+                                      Core::Thread::ThreadPool& _installQueue,
+                                      Core::Thread::ThreadPool& _shutdownQueue)
+        :   m_server(_server)
+        ,   m_pApplicationService(_pApplicationService)
+        ,   m_pRootLocation(_pRootLocation)
+        ,   m_installQueue(_installQueue)
+        ,   m_shutdownQueue(_shutdownQueue)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        ApplicationServer&          m_server;
+        pApplicationService_type    m_pApplicationService;
+        pResourceLocation_type      m_pRootLocation;
+        Core::Thread::ThreadPool&   m_installQueue;
+        Core::Thread::ThreadPool&   m_shutdownQueue;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    auto* pTask = new InstallApplicationServiceTask(
+            *this,
+            _pApplicationService,
+            _pRootLocation,
+            m_installQueue,
+            m_shutdownQueue
+    );
+
+    m_installQueue.pushRequest(pTask);
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::installProtocol(pProtocolService_type _pProtocolService)
+{
+    /// @name Internal Structures
+    /// @{
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    class InstallProtocolServiceTask
+    :   public Core::Thread::ThreadPool::Task
+    {
+        /// @name Internal Structures
+        /// @{
+    private:
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStartProtocolServiceTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Internal Structures
+            /// @{
+        private:
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StartProtocolServiceTask
+            :   public Core::Thread::ThreadPool::Task
+            {
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_pProtocolService->start();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                StartProtocolServiceTask(pProtocolService_type _pProtocolService)
+                :   m_pProtocolService(_pProtocolService)
+                {
+                }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                pProtocolService_type   m_pProtocolService;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            class StopProtocolServiceTask
+            :   public Core::Thread::ThreadPool::Task
+            {
+                /// @name Task implementation
+                /// @{
+            public:
+                void call() override
+                {
+                    m_pProtocolService->stop();
+                }
+                /// @}
+
+                /// @name 'Structors
+                /// @{
+            public:
+                StopProtocolServiceTask(pProtocolService_type _pProtocolService)
+                :   m_pProtocolService(_pProtocolService)
+                        {
+                        }
+                /// @}
+
+                /// @name Member Variables
+                /// @{
+            private:
+                pProtocolService_type   m_pProtocolService;
+                /// @}
+            };
+            //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+            /// @}
+
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override
+            {
+                auto* pCondition = m_pProtocolService->prepareToStart(m_server.getSharedThreadPool());
+                if (pCondition != nullptr)
+                {
+                    pCondition->requireCondition();
+                }
+
+                auto* pStartTask = new StartProtocolServiceTask(m_pProtocolService);
+                auto* pStopTask = new StopProtocolServiceTask(m_pProtocolService);
+                m_installQueue.pushRequest(pStartTask);
+                m_shutdownQueue.pushRequest(pStopTask);
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStartProtocolServiceTask(ApplicationServer& _server,
+                                              pProtocolService_type _pProtocolService,
+                                              Core::Thread::ThreadPool& _installQueue,
+                                              Core::Thread::ThreadPool& _shutdownQueue)
+            :   m_server(_server)
+            ,   m_pProtocolService(_pProtocolService)
+            ,   m_installQueue(_installQueue)
+            ,   m_shutdownQueue(_shutdownQueue)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            ApplicationServer&          m_server;
+            pProtocolService_type       m_pProtocolService;
+            Core::Thread::ThreadPool&   m_installQueue;
+            Core::Thread::ThreadPool&   m_shutdownQueue;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        class PrepareToStopProtocolServiceTask
+        :   public Core::Thread::ThreadPool::Task
+        {
+            /// @name Task implementation
+            /// @{
+        public:
+            void call() override
+            {
+                auto* pCondition = m_pProtocolService->prepareToStop();
+                if (pCondition != nullptr)
+                {
+                    pCondition->requireCondition();
+                }
+            }
+            /// @}
+
+            /// @name 'Structors
+            /// @{
+        public:
+            PrepareToStopProtocolServiceTask(pProtocolService_type _pProtocolService)
+            :   m_pProtocolService(_pProtocolService)
+            {
+            }
+            /// @}
+
+            /// @name Member Variables
+            /// @{
+        private:
+            pProtocolService_type   m_pProtocolService;
+            /// @}
+        };
+        //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+        /// @}
+
+        /// @name Task implementation
+        /// @{
+    public:
+        void call() override
+        {
+            m_server.handleInstallProtocol(m_pProtocolService);
+            auto* pStartTask = new PrepareToStartProtocolServiceTask(
+                    m_server,
+                    m_pProtocolService,
+                    m_installQueue,
+                    m_shutdownQueue);
+
+            auto* pStopTask =
+                    new PrepareToStopProtocolServiceTask(m_pProtocolService);
+
+            m_installQueue.pushRequest(pStartTask);
+            m_shutdownQueue.pushRequest(pStopTask);
+        }
+        /// @}
+
+        /// @name 'Structors
+        /// @{
+    public:
+        InstallProtocolServiceTask(ApplicationServer& _server,
+                                   pProtocolService_type _pProtocolService,
+                                   Core::Thread::ThreadPool& _installQueue,
+                                   Core::Thread::ThreadPool& _shutdownQueue)
+        :   m_server(_server)
+        ,   m_pProtocolService(_pProtocolService)
+        ,   m_installQueue(_installQueue)
+        ,   m_shutdownQueue(_shutdownQueue)
+        {
+        }
+        /// @}
+
+        /// @name Member Variables
+        /// @{
+    private:
+        ApplicationServer&          m_server;
+        pProtocolService_type       m_pProtocolService;
+        Core::Thread::ThreadPool&   m_installQueue;
+        Core::Thread::ThreadPool&   m_shutdownQueue;
+        /// @}
+    };
+    //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+    /// @}
+
+    /// Schedule the installation of the protocol service.
+    auto* pTask = new InstallProtocolServiceTask(
+            *this,
+            _pProtocolService,
+            m_installQueue,
+            m_shutdownQueue
+    );
+
+    m_installQueue.pushRequest(pTask);
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+ApplicationServer::pApplicationService_type
+ApplicationServer::getApplication(pResourceLocation_type _pServiceLocation) const
+{
+    m_pStartCondition->requireCondition();
+
+    Core::Thread::CriticalSection lock(m_pApplicationGuard);
+
+    ApplicationServices_type::const_iterator iter = m_applicationServices.find(_pServiceLocation);
+
+    if (iter != m_applicationServices.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        return pApplicationService_type();
+    }
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+ApplicationServer::pProtocolService_type
+ApplicationServer::getProtocol(const std::string &_protocolName)
+{
+    m_pStartCondition->requireCondition();
+
+    Core::Thread::CriticalSection lock(m_pProtocolGuard);
+
+    ProtocolServices_type::iterator iter = m_protocolServices.find(_protocolName);
+
+    if (iter != m_protocolServices.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        return pProtocolService_type();
+    }
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleMessage(pMessage_type _pMessage)
+{
+    m_sharedThreadPool.pushRequest(_pMessage->sendMessageTask());
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleRequest(pRequest_type _pRequest,
+                                 pResponseHandler_type _pResponseHandler)
+{
+    m_sharedThreadPool.pushRequest(_pRequest->sendRequestTask(_pResponseHandler));
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleInstallApplication(pApplicationService_type _pApplicationService,
+                                            pResourceLocation_type _pRootLocation)
+{
+    Core::Thread::CriticalSection lock(m_pApplicationGuard);
+
+    m_applicationServices[_pRootLocation] = _pApplicationService;
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+ApplicationServer::handleInstallProtocol(pProtocolService_type _pProtocolService)
+{
+    Core::Thread::CriticalSection lock(m_pProtocolGuard);
+    m_protocolServices[_pProtocolService->getName()] = _pProtocolService;
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

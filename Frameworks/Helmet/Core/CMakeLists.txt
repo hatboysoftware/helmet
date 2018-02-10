@@ -26,6 +26,17 @@ set(Helmet.Core_HEADERS
         Plugin/I_ModuleService.hpp
         Plugin/I_Plugin.hpp
         Plugin/I_PluginManager.hpp
+        Thread/ConditionFactory.hpp
+        Thread/CriticalSection.hpp
+        Thread/I_Callable.hpp
+        Thread/I_Condition.hpp
+        Thread/I_Mutex.hpp
+        Thread/I_Runnable.hpp
+        Thread/I_Thread.hpp
+        Thread/MutexFactory.hpp
+        Thread/SynchronizedQueue.hpp
+        Thread/ThreadFactory.hpp
+        Thread/ThreadPool.hpp
         Utility/Deleter.hpp
         Utility/I_Cleanable.hpp
         Utility/I_Handle.hpp
@@ -61,6 +72,21 @@ set (Helmet.Core_SRC
         src/Plugin/ModuleService.hpp
         src/Plugin/PluginManager.cpp
         src/Plugin/PluginManager.hpp
+        src/Thread/Condition.cpp
+        src/Thread/Condition.hpp
+        src/Thread/ConditionFactory.cpp
+        src/Thread/CriticalSection.cpp
+        src/Thread/I_Condition.cpp
+        src/Thread/I_Mutex.cpp
+        src/Thread/I_Thread.cpp
+        src/Thread/Mutex.cpp
+        src/Thread/Mutex.hpp
+        src/Thread/MutexFactory.cpp
+        src/Thread/SynchronizedQueue.cpp
+        src/Thread/Thread.cpp
+        src/Thread/Thread.hpp
+        src/Thread/ThreadFactory.cpp
+        src/Thread/ThreadPool.cpp
         src/Utility/I_Cleanable.cpp
 )
 

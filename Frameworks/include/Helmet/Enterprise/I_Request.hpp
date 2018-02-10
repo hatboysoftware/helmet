@@ -8,7 +8,7 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
+#include <Helmet/Enterprise/Configuration.hpp>
 
 #include <memory>
 
@@ -20,6 +20,7 @@
 namespace Helmet {
 namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+class I_ResponseHandler;
 
 class HELMET_ENTERPRISE_DLL_LINK I_Request
 :   public virtual I_Message
@@ -27,11 +28,13 @@ class HELMET_ENTERPRISE_DLL_LINK I_Request
     /// @name Types
     /// @{
 public:
+    typedef boost::shared_ptr<I_ResponseHandler>    pResponseHandler_type;
     /// @}
 
     /// @name I_Request interface.
     /// @{
 public:
+    virtual Core::Thread::ThreadPool::Task* sendRequestTask(pResponseHandler_type _pResponseHandler) const = 0;
     /// @}
 
     /// @name Events

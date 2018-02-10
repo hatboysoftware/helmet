@@ -8,35 +8,60 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/Configuration.hpp>
+#include <Helmet/Core/Thread/I_Mutex.hpp>
+
+// C++
+#include <string>
+
+#include <boost/thread/mutex.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Blockchain {
+namespace Core {
+namespace Thread {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_Node
+class Mutex
+:   public I_Mutex
 {
+    friend class Condition;
+
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Block interface
+    /// @name I_Mutex implementation
     /// @{
 public:
+    void acquire() override;
+    void release() override;
+    /// @}
+
+    /// @name Helper Functions
+    /// @{
+public:
+    static const std::string &getNameOfError(const int _errNo);
     /// @}
 
     /// @name 'Structors
     /// @{
-protected:
-             I_Node();
-    virtual ~I_Node();
+public:
+     Mutex();
+     Mutex(boost::mutex& _mutex);
+    ~Mutex() override;
     /// @}
 
-};  // class I_Node
+    /// @name Member variables
+    /// @{
+private:
+    boost::mutex* m_pMutex;
+    /// @}
+
+};  // class Mutex
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Blockchain
+}   // namespace Thread
+}   // namespace Core
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

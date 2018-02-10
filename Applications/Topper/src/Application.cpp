@@ -8,16 +8,26 @@
 
 #include "Application.hpp"
 
-#include <wx/config.h>
-#include <wx/msgdlg.h>
-
-#include <boost/log/trivial.hpp>
-#include <boost/filesystem.hpp>
 #include <Helmet/Core/Plugin/I_Environment.hpp>
 #include <Helmet/Core/Plugin/I_PluginManager.hpp>
+
+#include <Helmet/Enterprise/I_ApplicationServer.hpp>
+#include <Helmet/Enterprise/I_ResourceLocation.hpp>
+#include <Helmet/Enterprise/I_ProtocolServicePlugin.hpp>
+#include <Helmet/Enterprise/I_ProtocolService.hpp>
+
+#include <Helmet/Blockchain/I_BlockchainPlugin.hpp>
+#include <Helmet/Blockchain/I_BlockchainNode.hpp>
+
 #include <Helmet/Workbench/I_WorkbenchPlugin.hpp>
 #include <Helmet/Workbench/I_Workbench.hpp>
 #include <Helmet/Workbench/I_Frame.hpp>
+
+#include <boost/log/trivial.hpp>
+#include <boost/filesystem.hpp>
+
+#include <wx/config.h>
+#include <wx/msgdlg.h>
 
 DECLARE_APP(Topper::Application)
 IMPLEMENT_APP(Topper::Application)
@@ -28,6 +38,9 @@ namespace Topper {
 Application::Application()
 :   m_localeGenerator()
 ,   m_locale(m_localeGenerator.generate(""))
+,   m_applicationServer(Helmet::Enterprise::I_ApplicationServer::getInstance("Topper::ApplicationServer"))
+,   m_pBlockchainNode(nullptr)
+,   m_pProtocolService(nullptr)
 ,   m_pWorkbench(nullptr)
 {
 }
@@ -50,12 +63,37 @@ Application::OnInit()
     auto pEnvironment = Helmet::Core::Plugin::I_Environment::create();
     pEnvironment->writeConfigurationField("plugin-path", "./plugins");
     auto pPluginManager = Helmet::Core::Plugin::I_PluginManager::create(pEnvironment);
-    auto workbenchId = "Topper.Workbench";
-    auto pPlugin = pPluginManager->getPlugin(workbenchId);
-    auto pWorkbenchPlugin =
-            boost::static_pointer_cast<Helmet::Workbench::I_WorkbenchPlugin>(pPlugin);
-    m_pWorkbench = pWorkbenchPlugin->getWorkbench(pEnvironment);
+    {
+        auto workbenchId = "Topper.Workbench";
+        auto pPlugin = pPluginManager->getPlugin(workbenchId);
+        auto pWorkbenchPlugin =
+                boost::static_pointer_cast<Helmet::Workbench::I_WorkbenchPlugin>(pPlugin);
+        m_pWorkbench = pWorkbenchPlugin->getWorkbench(pEnvironment);
+    }
+
+    {
+        auto blockchainId = "Topper.Transaction.Blockchain";
+        auto pPlugin = pPluginManager->getPlugin(blockchainId);
+        auto pBlockchainPlugin =
+                boost::static_pointer_cast<Helmet::Blockchain::I_BlockchainPlugin>(pPlugin);
+        m_pBlockchainNode = pBlockchainPlugin->getNode(m_applicationServer, "Topper.Transaction.Blockchain");
+    }
+
+    {
+        auto protocolId = "Helmet.Enterprise.TCPProtocol";
+        auto pPlugin = pPluginManager->getPlugin(protocolId);
+        auto pProtocolPlugin =
+                boost::static_pointer_cast<Helmet::Enterprise::I_ProtocolServicePlugin>(pPlugin);
+        m_pProtocolService = pProtocolPlugin->getProtocolService(m_applicationServer, "Helmet.Enterprise.TCPProtocol");
+    }
+
+    m_applicationServer.installApplication(m_pBlockchainNode, Helmet::Enterprise::I_ResourceLocation::getLocation("blockchain"));
+    m_applicationServer.installProtocol(m_pProtocolService);
+
     m_pWorkbench->getMainFrame().show(true);
+
+    m_applicationServer.start();
+
     return true;
 }
 
@@ -63,6 +101,7 @@ Application::OnInit()
 int
 Application::OnExit()
 {
+    m_applicationServer.stop();
     return 0;
 }
 

@@ -8,11 +8,13 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "Configuration.hpp"
-
-#include <memory>
+#include <Helmet/Enterprise/I_ApplicationService.hpp>
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include <memory>
+#include <string>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -23,11 +25,13 @@ namespace Enterprise {
 ///
 ///
 class HELMET_ENTERPRISE_DLL_LINK I_ResourceLocation
-:   boost::noncopyable
+:   public boost::noncopyable
 {
     /// @name Types
     /// @{
 public:
+    typedef boost::shared_ptr<I_ApplicationService> pApplicationService_type;
+    typedef boost::shared_ptr<I_ResourceLocation>   pResourceLocation_type;
     /// @}
 
     /// @name I_ResourceLocation interface.
@@ -46,11 +50,17 @@ public:
 public:
     /// @}
 
+    /// @name Static methods
+    /// @{
+public:
+    static pResourceLocation_type getLocation(const std::string& _location);
+    /// @}
+
     /// @name 'Structors
     /// @{
 protected:
-             I_ResourceLocation() = default;
-    virtual ~I_ResourceLocation() = default;
+             I_ResourceLocation();
+    virtual ~I_ResourceLocation();
     /// @}
 
 };  // interface I_ResourceLocation

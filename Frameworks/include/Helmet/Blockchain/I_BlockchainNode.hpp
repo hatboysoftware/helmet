@@ -8,73 +8,38 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include "../I_Mutex.hpp"
+#include <Helmet/Blockchain/Configuration.hpp>
 
-// C++
-#include <string>
-
-#include <boost/thread/mutex.hpp>
+#include <Helmet/Enterprise/I_ApplicationService.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Threading {
+namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class Mutex
-:   public I_Mutex
+class HELMET_BLOCKCHAIN_DLL_LINK I_BlockchainNode
+:   public Enterprise::I_ApplicationService
 {
-    friend class Condition;
-
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Mutex implementation
+    /// @name I_BlockchainNode interface
     /// @{
 public:
-    virtual void acquire();
-    virtual void release();
-    /// @}
-
-    /// @name Helper Functions
-    /// @{
-public:
-    static const std::string& getNameOfError(const int _errNo);
     /// @}
 
     /// @name 'Structors
     /// @{
-public:
-             Mutex();
-    virtual ~Mutex();
-    /// @}
-
-    /// @name Accessor functions
-    /// @{
 protected:
-    inline boost::mutex&
-    getNativeMutex()
-    {
-        return m_mutex;
-    }
-
-    inline const boost::mutex&
-    getNativeMutex() const
-    {
-        return m_mutex;
-    }
+             I_BlockchainNode();
+    virtual ~I_BlockchainNode();
     /// @}
 
-    /// @name Member variables
-    /// @{
-private:
-    boost::mutex    m_mutex;
-    /// @}
-
-};  // class Mutex_posix
+};  // class I_Node
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Threading
+}   // namespace Blockchain
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
