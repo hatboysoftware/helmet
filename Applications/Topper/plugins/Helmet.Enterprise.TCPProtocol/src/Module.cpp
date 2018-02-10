@@ -14,7 +14,7 @@
 #include <Helmet/Core/Plugin/I_ModuleService.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-namespace Topper {
+namespace Helmet {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
 class Module
@@ -48,8 +48,8 @@ public:
     /// @name 'Structors
     /// @{
 public:
-    Module();
-    virtual ~Module();
+     Module();
+    ~Module() override;
     /// @}
 
     /// @name Member Variables
@@ -117,14 +117,14 @@ Module::instance()
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Topper
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 extern "C"
-TOPPER_BLOCKCHAIN_DLL_LINK
+HELMET_PROTOCOL_DLL_LINK
 Helmet::Core::Plugin::I_Module&
 getModule()
 {
-    return Topper::Module::instance();
+    return Helmet::Module::instance();
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

@@ -13,6 +13,8 @@
 
 #include <Helmet/Enterprise/I_ApplicationServer.hpp>
 #include <Helmet/Enterprise/I_ResourceLocation.hpp>
+#include <Helmet/Enterprise/I_ProtocolServicePlugin.hpp>
+#include <Helmet/Enterprise/I_ProtocolService.hpp>
 
 #include <Helmet/Blockchain/I_BlockchainPlugin.hpp>
 #include <Helmet/Blockchain/I_BlockchainNode.hpp>
@@ -38,6 +40,7 @@ Application::Application()
 ,   m_locale(m_localeGenerator.generate(""))
 ,   m_applicationServer(Helmet::Enterprise::I_ApplicationServer::getInstance("Topper::ApplicationServer"))
 ,   m_pBlockchainNode(nullptr)
+,   m_pProtocolService(nullptr)
 ,   m_pWorkbench(nullptr)
 {
 }
@@ -76,7 +79,16 @@ Application::OnInit()
         m_pBlockchainNode = pBlockchainPlugin->getNode(m_applicationServer, "Topper.Transaction.Blockchain");
     }
 
+    {
+        auto protocolId = "Helmet.Enterprise.TCPProtocol";
+        auto pPlugin = pPluginManager->getPlugin(protocolId);
+        auto pProtocolPlugin =
+                boost::static_pointer_cast<Helmet::Enterprise::I_ProtocolServicePlugin>(pPlugin);
+        m_pProtocolService = pProtocolPlugin->getProtocolService(m_applicationServer, "Helmet.Enterprise.TCPProtocol");
+    }
+
     m_applicationServer.installApplication(m_pBlockchainNode, Helmet::Enterprise::I_ResourceLocation::getLocation("blockchain"));
+    m_applicationServer.installProtocol(m_pProtocolService);
 
     m_pWorkbench->getMainFrame().show(true);
 
