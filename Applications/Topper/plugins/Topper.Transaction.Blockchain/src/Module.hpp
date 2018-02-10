@@ -16,8 +16,8 @@
 extern "C"
 {
 
-TOPPER_BLOCKCHAIN_DLL_LINK
-Helmet::Core::Plugin::I_Module& getModule();
+    TOPPER_BLOCKCHAIN_DLL_LINK
+    Helmet::Core::Plugin::I_Module& getModule();
 
 }
 

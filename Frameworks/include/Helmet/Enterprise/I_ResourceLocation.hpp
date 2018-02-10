@@ -10,10 +10,11 @@
 
 #include <Helmet/Enterprise/I_ApplicationService.hpp>
 
-#include <memory>
-
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include <memory>
+#include <string>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
@@ -24,18 +25,18 @@ namespace Enterprise {
 ///
 ///
 class HELMET_ENTERPRISE_DLL_LINK I_ResourceLocation
-:   boost::noncopyable
+:   public boost::noncopyable
 {
     /// @name Types
     /// @{
 public:
     typedef boost::shared_ptr<I_ApplicationService> pApplicationService_type;
+    typedef boost::shared_ptr<I_ResourceLocation>   pResourceLocation_type;
     /// @}
 
     /// @name I_ResourceLocation interface.
     /// @{
 public:
-    virtual void setApplicationService(pApplicationService_type _pApplicationService) = 0;
     /// Get the location as a string.
     virtual const std::string& toString() const = 0;
 
@@ -47,6 +48,12 @@ public:
     /// @name Events
     /// @{
 public:
+    /// @}
+
+    /// @name Static methods
+    /// @{
+public:
+    static pResourceLocation_type getLocation(const std::string& _location);
     /// @}
 
     /// @name 'Structors

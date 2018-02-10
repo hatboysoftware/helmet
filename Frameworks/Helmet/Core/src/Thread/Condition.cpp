@@ -37,14 +37,14 @@ Condition::~Condition()
 I_Condition&
 Condition::assertCondition()
 {
-    Mutex mutex(m_exclusiveAccessLock);
-    CriticalSection for_isAsserted(mutex);
+    m_exclusiveAccessLock.lock();
     m_isAsserted = true;
     if (m_threadsAreBlocked) {
         m_threadsAreBlocked = false;    // all currently-blocked threads are about to be awakened
         m_condition.notify_all();
     }
 
+    m_exclusiveAccessLock.unlock();
     return *this;
 }
 
@@ -52,9 +52,10 @@ Condition::assertCondition()
 I_Condition&
 Condition::retractCondition()
 {
-    Mutex mutex(m_exclusiveAccessLock);
-    CriticalSection for_IsAsserted(mutex);
+    m_exclusiveAccessLock.lock();
     m_isAsserted = false;
+
+    m_exclusiveAccessLock.unlock();
     return *this;
 }
 
@@ -62,12 +63,13 @@ Condition::retractCondition()
 I_Condition&
 Condition::requireCondition()
 {
-    Mutex mutex(m_exclusiveAccessLock);
-    CriticalSection for_IsAsserted(mutex);
+    m_exclusiveAccessLock.lock();
     if (!m_isAsserted) {
         m_threadsAreBlocked = true;
         m_condition.wait(m_exclusiveAccessLock);
     }
+
+    m_exclusiveAccessLock.unlock();
 
     return *this;
 }

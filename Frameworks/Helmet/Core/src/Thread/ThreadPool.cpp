@@ -37,7 +37,7 @@ ThreadPool::ThreadPool(unsigned const _numThreads,
 ,   m_amStopping(false)
 ,   m_amStoppingAsSoonAsPossible(false)
 ,   m_waitForEmptyQueue(_waitForEmptyQueue)
-,   m_spinLock()
+,   m_pSpinLock(MutexFactory::create())
 {
     m_threadPool.reserve(_numThreads);
 
@@ -71,6 +71,7 @@ ThreadPool::~ThreadPool()
         if (pTask) pTask->dispose();
     }
 
+    MutexFactory::destroy(m_pSpinLock);
     ConditionFactory::destroy(m_pAllThreadsAreRunning);
 }
 
@@ -87,8 +88,7 @@ ThreadPool::start()
 {
     // Guard while checking to see if the threads are already started
     {
-        Mutex mutex(m_spinLock);
-        CriticalSection guard(mutex);
+        CriticalSection guard(m_pSpinLock);
         if (m_threadsStarted) {
             /// If they're already started, simply return
             return;
@@ -160,8 +160,7 @@ ThreadPool::stop()
 void
 ThreadPool::TaskPool::give(PooledTask &_task)
 {
-    Mutex mutex(m_spinLock);
-    CriticalSection cs(mutex);
+    CriticalSection cs(m_pSpinLock);
 
     m_unusedTasks.push_front(_task);
 }
@@ -180,8 +179,7 @@ ThreadPool::TaskPool::take()
 
         // Check to see if the collection is empty.
         {
-            Mutex mutex(m_spinLock);
-            CriticalSection cs(mutex);
+            CriticalSection cs(m_pSpinLock);
 
             // If the unused tasks collection is not empty, pop a task off of the list
             // TR - size() is linear time, so use empty() whenever possible
@@ -234,8 +232,7 @@ void ThreadPool::ThreadPoolRunnable::run() throw() {
         {
             bool readyToRockAndRoll;
             {
-                Mutex mutex(m_pool.m_spinLock);
-                CriticalSection cs(mutex);
+                CriticalSection cs(m_pool.m_pSpinLock);
                 readyToRockAndRoll = (0 == --m_pool.m_numberOfNotRunningThreads);
             }
             if (readyToRockAndRoll) {

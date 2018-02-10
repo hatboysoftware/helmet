@@ -153,18 +153,23 @@ public:
         :   m_pooledTaskAllocator (_pooledTaskAllocator)
         ,   m_amPreparingToStop(false)
         ,   m_amStopping(false)
-        ,   m_spinLock()
+        ,   m_pSpinLock(MutexFactory::create())
         {
         }
 
         virtual ~TaskPool()
         {
-            PooledTask *pTask;
-            while (!m_unusedTasks.empty()) {
-                pTask = &(m_unusedTasks.front());
-                m_unusedTasks.pop_front();
-                m_pooledTaskAllocator.destroy(pTask);
+            {
+                CriticalSection lock(m_pSpinLock);
+                PooledTask *pTask;
+                while (!m_unusedTasks.empty()) {
+                    pTask = &(m_unusedTasks.front());
+                    m_unusedTasks.pop_front();
+                    m_pooledTaskAllocator.destroy(pTask);
+                }
             }
+
+            MutexFactory::destroy(m_pSpinLock);
         }
         /// @}
 
@@ -182,7 +187,7 @@ public:
 
         volatile bool m_amStopping;
 
-        mutable boost::mutex m_spinLock;
+        mutable I_Mutex* m_pSpinLock;
         /// @}
 
     };  // class TaskPool
@@ -324,7 +329,7 @@ private:
     /// Destructor watis for all work requests to finish
     const bool m_waitForEmptyQueue;
 
-    mutable boost::mutex m_spinLock;
+    mutable I_Mutex* m_pSpinLock;
 
     friend class ThreadPoolRunnable;
     /// }

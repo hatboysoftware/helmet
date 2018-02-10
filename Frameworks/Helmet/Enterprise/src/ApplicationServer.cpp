@@ -777,7 +777,6 @@ ApplicationServer::handleInstallApplication(pApplicationService_type _pApplicati
     Core::Thread::CriticalSection lock(m_pApplicationGuard);
 
     m_applicationServices[_pRootLocation] = _pApplicationService;
-    _pRootLocation->setApplicationService(_pApplicationService);
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

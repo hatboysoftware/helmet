@@ -22,6 +22,7 @@ set (Topper.Transaction.Blockchain_SRC
         )
 
 set (Topper.Transaction.Blockchain_DEFINITIONS
+        -DTOPPER_BLOCKCHAIN_EXPORTS
         -DBOOST_LOG_DYN_LINK)
 
 add_definitions(${Topper.Transaction.Blockchain_DEFINITIONS})
