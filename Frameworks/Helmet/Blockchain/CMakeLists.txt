@@ -9,20 +9,28 @@ include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/include ${Boost_INCLUDE_D
 include(Utilities)
 
 set (Helmet.Blockchain_HEADERS
+        Contracts/I_ContractPayload.hpp
+        Cryptocurrency/I_CurrencyPayload.hpp
         Configuration.hpp
         I_Block.hpp
         I_Blockchain.hpp
         I_BlockchainNode.hpp
         I_BlockchainPlugin.hpp
+        I_BlockPayload.hpp
+        I_CompositePayload.hpp
 )
 
 string(REGEX REPLACE "([^;]+)" "${HELMET_INCLUDE_DIRS}/Helmet/Blockchain/\\1" Helmet.Blockchain_HEADERS "${Helmet.Blockchain_HEADERS}")
 
 set (Helmet.Blockchain_SRC
+        src/Contracts/I_ContractPayload.cpp
+        src/Cryptocurrency/I_CurrencyPayload.cpp
         src/I_Block.cpp
         src/I_Blockchain.cpp
         src/I_BlockchainNode.cpp
         src/I_BlockchainPlugin.cpp
+        src/I_BlockPayload.cpp
+        src/I_CompositePayload.cpp
 )
 
 set (Helmet.Blockchain_DEFINITIONS

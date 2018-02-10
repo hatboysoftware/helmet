@@ -4,39 +4,43 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/I_Block.hpp>
+#include <Helmet/Blockchain/I_BlockPayload.hpp>
+
+#include <Helmet/Core/Utility/I_Visitor.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class HELMET_BLOCKCHAIN_DLL_LINK I_CompositePayload
+:   public I_BlockPayload
 {
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_CompositePayload interface
     /// @{
 public:
-    virtual void addBlock(I_Block& _newBlock) = 0;
+    virtual void getPayloads(Core::Utility::I_Visitor<I_BlockPayload>& _visitor) const = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+             I_CompositePayload();
+    virtual ~I_CompositePayload();
     /// @}
 
-};  // interface I_Block
+};  // interface I_BlockPayload
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

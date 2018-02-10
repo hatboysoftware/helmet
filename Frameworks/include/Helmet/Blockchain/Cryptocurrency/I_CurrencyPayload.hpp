@@ -4,39 +4,42 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/I_Block.hpp>
+#include <Helmet/Blockchain/I_BlockPayload.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
+namespace Cryptocurrency {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class HELMET_BLOCKCHAIN_DLL_LINK I_CurrencyPayload
+:   public I_BlockPayload 
 {
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_CurrencyPayload interface
     /// @{
 public:
-    virtual void addBlock(I_Block& _newBlock) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+             I_CurrencyPayload();
+    virtual ~I_CurrencyPayload();
     /// @}
 
-};  // interface I_Block
+};  // interface I_CurrencyPayload
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+}   // namespace Cryptocurrency
 }   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

@@ -10,6 +10,10 @@ include(Utilities)
 
 set (Topper.Transaction.Blockchain_SRC
         src/Configuration.hpp
+        src/Block.cpp
+        src/Block.hpp
+        src/Blockchain.cpp
+        src/Blockchain.hpp
         src/BlockchainNode.cpp
         src/BlockchainNode.hpp
         src/Module.cpp

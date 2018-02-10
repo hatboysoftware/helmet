@@ -4,39 +4,39 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/I_Block.hpp>
+#include <Helmet/Blockchain/Configuration.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class HELMET_BLOCKCHAIN_DLL_LINK I_BlockPayload
 {
     /// @name Types
     /// @{
 public:
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_BlockPayload interface
     /// @{
 public:
-    virtual void addBlock(I_Block& _newBlock) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+             I_BlockPayload();
+    virtual ~I_BlockPayload();
     /// @}
 
-};  // interface I_Block
+};  // interface I_BlockPayload
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
