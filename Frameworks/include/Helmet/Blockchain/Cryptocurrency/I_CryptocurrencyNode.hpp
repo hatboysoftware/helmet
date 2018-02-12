@@ -8,25 +8,18 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/Configuration.hpp>
-
-#include <Helmet/Core/Utility/I_Visitor.hpp>
-
-#include <Helmet/Enterprise/I_ApplicationService.hpp>
-#include <Helmet/Enterprise/I_Peer.hpp>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
+#include <Helmet/Blockchain/I_BlockchainNode.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
+namespace Cryptocurrency {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_Block;
+class I_Transaction;
 
-class HELMET_BLOCKCHAIN_DLL_LINK I_BlockchainNode
-:   public Enterprise::I_ApplicationService
+class HELMET_BLOCKCHAIN_DLL_LINK I_CryptocurrencyNode
+:   public I_BlockchainNode
 {
     /// @name Forward Declarations
     /// @{
@@ -34,10 +27,11 @@ public:
     class I_Peer;
     /// @}
 
-    /// @name Types
+    /// @name Type
     /// @{
 public:
-    typedef boost::shared_ptr<I_Peer>       pBlockchainPeer_type;
+    typedef boost::shared_ptr<I_Transaction>    pTransaction_type;
+    typedef boost::shared_ptr<I_Peer>           pCryptocurrencyPeer_type;
     /// @}
 
     /// @name Internal Structures
@@ -45,19 +39,18 @@ public:
 public:
     //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
     class HELMET_BLOCKCHAIN_DLL_LINK I_Peer
-    :   public Helmet::Enterprise::I_Peer
+    :   public Helmet::Blockchain::I_BlockchainNode::I_Peer
     {
         /// @name Types
         /// @{
     public:
-        typedef boost::shared_ptr<I_Block>  pBlock_type;
         /// @}
 
         /// @name I_Peer interface
         /// @{
     public:
-        virtual void sendBlock(pBlock_type _pBlock) const = 0;
-        virtual void getBlock(boost::uint64_t _index) const = 0;
+        virtual void sendTransaction(pTransaction_type _pTransaction) const = 0;
+        virtual void getConfirmation(pTransaction_type _pTransaction) const = 0;
         /// @}
 
         /// @name 'Structors
@@ -71,24 +64,24 @@ public:
     //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
     /// @}
 
-    /// @name I_BlockchainNode interface
+    /// @name I_CryptocurrencyNode interface
     /// @{
 public:
-    virtual void addPeer(pBlockchainPeer_type _pPeer) = 0;
-    virtual void removePeer(pBlockchainPeer_type _pPeer) = 0;
-    virtual void getPeers(Core::Utility::I_Visitor<I_Peer>& _visitor) = 0;
+    virtual void addTransaction(pTransaction_type _pTransaction) = 0;
+    virtual void getTransactions(Core::Utility::I_Visitor<I_Transaction>& _transaction) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_BlockchainNode();
-    virtual ~I_BlockchainNode();
+             I_CryptocurrencyNode();
+    virtual ~I_CryptocurrencyNode();
     /// @}
 
-};  // class I_Node
+};  // interface I_CryptocurrencyNode
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+}   // namespace Cryptocurrency
 }   // namespace Blockchain
 }   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

@@ -53,6 +53,9 @@ public:
     /// @name I_BlockchainNode implementation
     /// @{
 public:
+    void addPeer(pBlockchainPeer_type _pPeer) override;
+    void removePeer(pBlockchainPeer_type _pPeer) override;
+    void getPeers(Helmet::Core::Utility::I_Visitor<I_Peer>& _visitor) override;
     /// @}
 
     /// @name BlockchainNode implementation

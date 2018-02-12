@@ -25,7 +25,7 @@ public:
     /// @name I_Blockchain implementation
     /// @{
 public:
-    void addBlock(Helmet::Blockchain::I_Block& _newBlock) override;
+    void addBlock(pBlock_type _pBlock) override;
     /// @}
 
     /// @name Blockchain implementation

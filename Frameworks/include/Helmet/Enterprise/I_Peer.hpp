@@ -4,44 +4,45 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/Configuration.hpp>
+#include <Helmet/Enterprise/Configuration.hpp>
+
+#include <Helmet/Core/Utility/I_Visitor.hpp>
 
 #include <boost/shared_ptr.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
-namespace Blockchain {
+namespace Enterprise {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_Block;
-
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class HELMET_ENTERPRISE_DLL_LINK I_Peer
 {
     /// @name Types
     /// @{
 public:
-    typedef boost::shared_ptr<I_Block>  pBlock_type;
+    typedef boost::shared_ptr<I_Peer>   pPeer_type;
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_Peer interface
     /// @{
 public:
-    virtual void addBlock(pBlock_type _pBlock) = 0;
+    virtual void sendPeer(pPeer_type _pPeer) = 0;
+    virtual void getPeers(Core::Utility::I_Visitor<I_Peer>& _visitor) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+             I_Peer();
+    virtual ~I_Peer();
     /// @}
-
-};  // interface I_Block
+};
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Enterprise
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

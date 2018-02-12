@@ -16,7 +16,7 @@ Blockchain::Blockchain() = default;
 Blockchain::~Blockchain() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 void
-Blockchain::addBlock(Helmet::Blockchain::I_Block& _newBlock)
+Blockchain::addBlock(pBlock_type _pBlock)
 {
 
 }
