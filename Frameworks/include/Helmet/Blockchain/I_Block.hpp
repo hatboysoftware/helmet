@@ -32,7 +32,7 @@ public:
     virtual const std::string &getPreviousHash() const = 0;
     virtual void setPreviousHash(const std::string& _prevHash) = 0;
     virtual const std::string &getHash() const = 0;
-    virtual void mineBlock(boost::uint32_t nDifficulty) = 0;
+    virtual void mineBlock(boost::uint32_t _nDifficulty) = 0;
     /// @}
 
     /// @name 'Structors

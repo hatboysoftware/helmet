@@ -38,6 +38,7 @@ set (Helmet.Enterprise_HEADERS
         I_NetworkServiceFactory.hpp
         I_NetworkWriteReadyListener.hpp
         I_NumericTypeMessageRegistry.hpp
+        I_Peer.hpp
         I_ProtocolManager.hpp
         I_ProtocolService.hpp
         I_ProtocolServiceFactory.hpp
@@ -89,6 +90,7 @@ set (Helmet.Enterprise_SRC
         src/I_NetworkService.cpp
         src/I_NetworkServiceFactory.cpp
         src/I_NumericTypeMessageRegistry.cpp
+        src/I_Peer.cpp
         src/I_ProtocolManager.cpp
         src/I_ProtocolService.cpp
         src/I_ProtocolServiceFactory.cpp

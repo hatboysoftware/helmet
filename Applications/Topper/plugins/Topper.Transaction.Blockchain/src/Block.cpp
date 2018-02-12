@@ -1,24 +1,49 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Helmet Software Framework
+// Topper Trading Workbench
 //
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#include <Helmet/Blockchain/I_BlockchainNode.hpp>
+#include "Block.hpp"
+
+#include <Helmet/Core/Exception/NotImplementedException.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-namespace Helmet {
-namespace Blockchain {
+namespace Topper {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_BlockchainNode() = default;
+Block::Block() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::~I_BlockchainNode() = default;
+Block::~Block() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_Peer::I_Peer() = default;
+const std::string&
+Block::getPreviousHash() const
+{
+    HELMET_NOT_IMPLEMENTED_EXCEPTION();
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_Peer::~I_Peer() = default;
+void
+Block::setPreviousHash(const std::string &_prevHash)
+{
+    HELMET_NOT_IMPLEMENTED_EXCEPTION();
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Blockchain
-}   // namespace Helmet
+const std::string&
+Block::getHash() const
+{
+    HELMET_NOT_IMPLEMENTED_EXCEPTION();
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+void
+Block::mineBlock(boost::uint32_t _nDifficulty)
+{
+    HELMET_NOT_IMPLEMENTED_EXCEPTION();
+}
+
+//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+}   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

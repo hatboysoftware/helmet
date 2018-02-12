@@ -1,24 +1,26 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Helmet Software Framework
+// Topper Trading Workbench
 //
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-#include <Helmet/Blockchain/I_BlockchainNode.hpp>
+#include "Blockchain.hpp"
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-namespace Helmet {
-namespace Blockchain {
+namespace Topper {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_BlockchainNode() = default;
+Blockchain::Blockchain() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::~I_BlockchainNode() = default;
+Blockchain::~Blockchain() = default;
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_Peer::I_Peer() = default;
+void
+Blockchain::addBlock(pBlock_type _pBlock)
+{
+
+}
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-I_BlockchainNode::I_Peer::~I_Peer() = default;
-//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Blockchain
-}   // namespace Helmet
+}   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

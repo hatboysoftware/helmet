@@ -1,47 +1,51 @@
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-// Helmet Software Framework
+// Topper Trading Workbench
 //
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
-#include <Helmet/Blockchain/Configuration.hpp>
-
-#include <boost/shared_ptr.hpp>
+#include <Helmet/Blockchain/I_Blockchain.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-namespace Helmet {
-namespace Blockchain {
+namespace Topper {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_Block;
-
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class Blockchain
+:   public Helmet::Blockchain::I_Blockchain
 {
     /// @name Types
     /// @{
 public:
-    typedef boost::shared_ptr<I_Block>  pBlock_type;
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_Blockchain implementation
     /// @{
 public:
-    virtual void addBlock(pBlock_type _pBlock) = 0;
+    void addBlock(pBlock_type _pBlock) override;
+    /// @}
+
+    /// @name Blockchain implementation
+    /// @{
+public:
     /// @}
 
     /// @name 'Structors
     /// @{
-protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+public:
+     Blockchain();
+    ~Blockchain() override;
     /// @}
 
-};  // interface I_Block
+    /// @name Member Variables
+    /// @{
+private:
+    /// @}
+};
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-}   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Topper
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~

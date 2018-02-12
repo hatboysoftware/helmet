@@ -4,44 +4,39 @@
 // Copyright (C) 2018 Hat Boy Software, Inc.
 //
 //  @author Matthew Alan Gray - <mgray@hatboysoftware.com>
+//  @author Tony Richards - <trichards@indiezen.com>
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 #pragma once
 
 #include <Helmet/Blockchain/Configuration.hpp>
-
-#include <boost/shared_ptr.hpp>
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
-class I_Block;
-
-class HELMET_BLOCKCHAIN_DLL_LINK I_Blockchain
+class HELMET_BLOCKCHAIN_DLL_LINK I_BlockPayload
 {
     /// @name Types
     /// @{
 public:
-    typedef boost::shared_ptr<I_Block>  pBlock_type;
     /// @}
 
-    /// @name I_Blockchain interface
+    /// @name I_BlockPayload interface
     /// @{
 public:
-    virtual void addBlock(pBlock_type _pBlock) = 0;
     /// @}
 
     /// @name 'Structors
     /// @{
 protected:
-             I_Blockchain();
-    virtual ~I_Blockchain();
+             I_BlockPayload();
+    virtual ~I_BlockPayload();
     /// @}
 
-};  // interface I_Block
+};  // interface I_BlockPayload
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 }   // namespace Blockchain
-}   // namespace Blockchain
+}   // namespace Helmet
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
