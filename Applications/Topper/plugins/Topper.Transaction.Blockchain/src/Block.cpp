@@ -24,13 +24,6 @@ Block::getPreviousHash() const
 }
 
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-void
-Block::setPreviousHash(const std::string &_prevHash)
-{
-    HELMET_NOT_IMPLEMENTED_EXCEPTION();
-}
-
-//-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 const std::string&
 Block::getHash() const
 {

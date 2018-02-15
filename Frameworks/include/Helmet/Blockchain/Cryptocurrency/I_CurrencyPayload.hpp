@@ -10,11 +10,15 @@
 
 #include <Helmet/Blockchain/I_BlockPayload.hpp>
 
+#include <Helmet/Core/Utility/I_Visitor.hpp>
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
 namespace Cryptocurrency {
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+
+class I_Transaction;
 
 class HELMET_BLOCKCHAIN_DLL_LINK I_CurrencyPayload
 :   public I_BlockPayload 
@@ -27,6 +31,7 @@ public:
     /// @name I_CurrencyPayload interface
     /// @{
 public:
+    virtual void getTransactions(Core::Utility::I_Visitor<I_Transaction>& _visitor) const = 0;
     /// @}
 
     /// @name 'Structors

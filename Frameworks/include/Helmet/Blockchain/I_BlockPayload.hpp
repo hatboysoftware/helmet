@@ -10,6 +10,8 @@
 
 #include <Helmet/Blockchain/Configuration.hpp>
 
+#include <string>
+
 //-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 namespace Helmet {
 namespace Blockchain {
@@ -25,6 +27,7 @@ public:
     /// @name I_BlockPayload interface
     /// @{
 public:
+    virtual const std::string& getHash() const = 0;
     /// @}
 
     /// @name 'Structors
